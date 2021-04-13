@@ -1,5 +1,9 @@
 
-#include "units_info.h"
+#include <iostream>
+
+#include "units_info_i2c.h"
+#include "units_info_spi.h"
+#include "units_info_gpio.h"
 
 using namespace InSys;
 
@@ -30,13 +34,18 @@ void print(const unit_info_gpio &gpio_info) {
 }
 
 int main(int argc, char *argv[]) try {
+
+  std::string config{"blablabla"};
+
   // делаем разбор конфигурации
-  units_info units{"blablabla"};
+  units_info_i2c units_i2c{config};
+  units_info_spi units_spi{config};
+  units_info_gpio units_gpio{config};
 
   std::cout << std::string(32, '-') << '\n' << std::hex;
 
   // получаем описание всех узлов I2C
-  auto i2c_info_list = units.get_i2c_info();
+  auto i2c_info_list = units_i2c.get_info();
   // обходим все узлы I2C
   for (const auto &i2c_info : i2c_info_list) {
     // выводим описание каждого узла в консоль
@@ -44,7 +53,7 @@ int main(int argc, char *argv[]) try {
   }
 
   // получаем описание всех узлов SPI
-  auto spi_info_list = units.get_spi_info();
+  auto spi_info_list = units_spi.get_info();
   // обходим все узлы SPI
   for (const auto &spi_info : spi_info_list) {
     // выводим описание каждого узла в консоль
@@ -52,50 +61,21 @@ int main(int argc, char *argv[]) try {
   }
 
   // получаем описание всех узлов GPIO
-  auto gpio_info_list = units.get_gpio_info();
+  auto gpio_info_list = units_gpio.get_info();
   // обходим все узлы GPIO
   for (const auto &gpio_info : gpio_info_list) {
     // выводим описание каждого узла в консоль
     print(gpio_info);
   }
 
-  // получаем описание всех узлов
-  auto units_info_list = units.get_info();
-  // обходим все узлы
-  for (const auto &unit_info : units_info_list) {
-    // если узел имее тип I2C
-    if (unit_info.type() == typeid(unit_info_i2c)) {
-      auto i2c_info = unit_info_cast<unit_info_i2c>(unit_info);
-      // выводим описание узла в консоль
-      print(i2c_info);
-    }
-    // если узел имее тип SPI
-    if (unit_info.type() == typeid(unit_info_spi)) {
-      auto spi_info = unit_info_cast<unit_info_spi>(unit_info);
-      // выводим описание узла в консоль
-      print(spi_info);
-    }
-    // если узел имее тип GPIO
-    if (unit_info.type() == typeid(unit_info_gpio)) {
-      auto gpio_info = unit_info_cast<unit_info_gpio>(unit_info);
-      // выводим описание узла в консоль
-      print(gpio_info);
-    }
-  }
-
   // формируем ID для INA218
   auto ina218_id = units_info_make_id("INA218");
   // поиск всех узлов с соответствующим ID
-  auto ina218_info_list = units.find_info(ina218_id);
+  auto ina218_info_list = units_i2c.find_info(ina218_id);
   // обходим все найденные узлы
   for (const auto &ina218_info : ina218_info_list) {
-    // если тип не соответствует ожидаемому, то пропускаем
-    if (ina218_info.type() != typeid(unit_info_i2c)) {
-      continue;
-    }
-    auto i2c_info = unit_info_cast<unit_info_i2c>(ina218_info);
     // выводим описание узла в консоль
-    print(i2c_info);
+    print(ina218_info);
   }
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
