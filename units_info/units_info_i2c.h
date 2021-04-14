@@ -16,14 +16,6 @@ struct unit_info_i2c : unit_info_base {
   const int address{};            //< I2C адрес
   const double frequency{};       //< I2C частота
   inline static const std::string unit{"i2c"};
-  std::string to_config() const {
-    std::stringstream config{};
-    config << unit_info_base::to_config();
-    config << "unit = " << unit << '\n';
-    config << "addr = 0x" << std::hex << address << '\n';
-    config << "freq = " << std::dec << frequency << '\n';
-    return config.str();
-  }
 };
 
 /// список параметров узлов I2C

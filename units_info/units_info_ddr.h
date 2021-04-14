@@ -11,7 +11,6 @@ struct unit_info_ddr : unit_info_base {
       : unit_info_base{_name, _axi_offset} {}  //< размещающий
                                                //конструктор
   inline static const std::string unit{"ddr"};
-  std::string to_config() const { return unit_info_base::to_config(); }
 };
 
 /// список параметров узлов DDR

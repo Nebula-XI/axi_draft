@@ -16,14 +16,6 @@ struct unit_info_spi : unit_info_base {
   const int chip_select{};  //< выбор кристала
   const double clock{};     //< частота
   inline static const std::string unit{"spi"};
-  std::string to_config() const {
-    std::stringstream config{};
-    config << unit_info_base::to_config();
-    config << "unit = " << unit << '\n';
-    config << "cs = 0x" << std::hex << chip_select << '\n';
-    config << "clk = " << std::dec << clock << '\n';
-    return config.str();
-  }
 };
 
 /// список параметров узлов SPI

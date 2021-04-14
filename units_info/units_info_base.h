@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -45,14 +44,6 @@ struct unit_info_base {
   const std::size_t id{};  //< уникальный идентификатор узла
   const std::string name{};  //< имя узла
   const std::size_t axi_offset{};  //< смещение в адресном пространстве
-  std::string to_config() const {
-    std::stringstream config{};
-    config << '[' << name << "]\n";
-    config << "name = " << name << '\n';
-    config << "id = 0x" << std::hex << id << '\n';
-    config << "axi_offset = 0x" << axi_offset << '\n';
-    return config.str();
-  }
 };
 
 /// список параметров узлов

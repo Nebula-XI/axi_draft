@@ -11,12 +11,6 @@ struct unit_info_gpio : unit_info_base {
       : unit_info_base{_name, _axi_offset} {}  //< размещающий
                                                //конструктор
   inline static const std::string unit{"gpio"};
-  std::string to_config() const {
-    std::string config{};
-    config += unit_info_base::to_config();
-    config += "unit = " + unit + "\n";
-    return config;
-  }
 };
 
 /// список параметров узлов GPIO

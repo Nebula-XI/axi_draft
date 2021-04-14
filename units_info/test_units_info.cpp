@@ -25,8 +25,6 @@ void print_info(const unit_info_i2c &info) {
   std::cout << "unit address: 0x" << info.address << '\n';
   std::cout << "unit frequency: " << std::dec << info.frequency << '\n';
   std::cout << "unit axi offset: 0x" << std::hex << info.axi_offset << '\n';
-  std::cout << std::string(32, '~') << '\n';
-  std::cout << info.to_config() << '\n';
   std::cout << std::string(32, '-') << '\n';
 }
 
@@ -37,8 +35,6 @@ void print_info(const unit_info_spi &info) {
   std::cout << "unit chip select: 0x" << info.chip_select << '\n';
   std::cout << "unit clock: " << std::dec << info.clock << '\n';
   std::cout << "unit axi offset: 0x" << std::hex << info.axi_offset << '\n';
-  std::cout << std::string(32, '~') << '\n';
-  std::cout << info.to_config() << '\n';
   std::cout << std::string(32, '-') << '\n';
 }
 
@@ -47,8 +43,6 @@ void print_info(const unit_info_gpio &info) {
   std::cout << "unit type: " << info.unit << '\n';
   std::cout << "unit id: 0x" << std::hex << info.id << '\n';
   std::cout << "unit axi offset: 0x" << info.axi_offset << '\n';
-  std::cout << std::string(32, '~') << '\n';
-  std::cout << info.to_config() << '\n';
   std::cout << std::string(32, '-') << '\n';
 }
 
