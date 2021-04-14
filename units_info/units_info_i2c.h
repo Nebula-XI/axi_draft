@@ -58,6 +58,16 @@ class units_info_i2c_parser
   units_info_i2c_parser(const std::string &config) : units_info_base{config} {
     parser(config);
   }
+  /// поиск узлов по заданному имени
+  list_type find_info_behind_switch() const {
+    list_type info_list{};
+    for (const auto &info : _info_list) {
+      if (info.parent_switch.is_present) {
+        info_list.push_back(info);
+      }
+    }
+    return info_list;
+  }
 };
 
 }  // namespace InSys

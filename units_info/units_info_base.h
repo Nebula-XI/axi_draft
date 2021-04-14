@@ -28,8 +28,8 @@ constexpr unsigned long long operator"" _GHz(unsigned long long value) {
 }
 
 /// функция формирования уникального идентификатора узла
-inline auto units_info_make_id(const std::string &name,
-                               const std::string &lable) noexcept {
+inline auto units_info_make_uid(const std::string &name,
+                                const std::string &lable) noexcept {
   return std::hash<std::string>{}(name + lable);
 }
 
@@ -38,7 +38,7 @@ struct unit_info_base {
   unit_info_base() = delete;  //< контруктор по умолчанию
   unit_info_base(const std::string &_name, const std::string &_label,
                  std::size_t _axi_offset)
-      : uid{units_info_make_id(_name, _label)},
+      : uid{units_info_make_uid(_name, _label)},
         name{_name},
         label{_label},
         axi_offset{_axi_offset} {}  //< размещающий
@@ -77,7 +77,7 @@ class units_info_base {
     return result;
   }
   /// поиск узлов по заданному идентификатору
-  std::optional<value_type> get_info_by_id(std::size_t uid) const {
+  std::optional<value_type> get_info_by_uid(std::size_t uid) const {
     std::optional<value_type> result{};
     for (const auto &info : _info_list) {
       if (info.uid == uid) {

@@ -30,7 +30,7 @@ void print_info(const unit_info_i2c &info) {
   std::cout << "offset: 0x" << std::hex << info.axi_offset << '\n';
   if (info.parent_switch.is_present) {
     std::cout << "switch uid: 0x" << std::hex << info.parent_switch.uid << '\n';
-    std::cout << "switch port:" << std::dec << info.parent_switch.port << '\n';
+    std::cout << "switch port: " << std::dec << info.parent_switch.port << '\n';
   }
   std::cout << std::string(32, '-') << '\n';
 }
@@ -105,11 +105,11 @@ int main(int argc, char *argv[]) try {
       print_info(info);
     }
 
-  std::cout << "EXAMPLE [4] - get I2C unit by ID:\n";
+  std::cout << "EXAMPLE [4] - get I2C unit by UID:\n";
   // формируем ID для INA218
-  auto ina218_id = units_info_make_id("INA218", "DD6");
+  auto ina218_uid = units_info_make_uid("INA218", "DD6");
   // поиск всех узлов с соответствующим ID
-  auto ina218_info = units_info_i2c.get_info_by_id(ina218_id);
+  auto ina218_info = units_info_i2c.get_info_by_uid(ina218_uid);
   if (ina218_info.has_value()) {
     // выводим описание узла в консоль
     print_info(ina218_info.value());
@@ -142,7 +142,20 @@ int main(int argc, char *argv[]) try {
     print_info_not_found(unit_info_i2c::unit);
   }
 
-  std::cout << "EXAMPLE [7] - any units list:\n";
+  std::cout << "EXAMPLE [7] - get I2C units behind switch:\n";
+  // получаем описание всех узлов I2C которые находятся за switch'ами
+  auto i2c_info_behind_switch_list = units_info_i2c.find_info_behind_switch();
+  if (i2c_info_behind_switch_list.empty()) {
+    // список узлов пуст
+    print_info_list_empty(unit_info_i2c::unit);
+  } else
+    // обходим все узлы I2C
+    for (const auto &info : i2c_info_behind_switch_list) {
+      // выводим описание каждого узла I2C в консоль
+      print_info(info);
+    }
+
+  std::cout << "EXAMPLE [8] - any units list:\n";
   // обобщенный список параметров узлов
   units_info_any_list units_info_any_list{};
   // заполняем список параметрами узлов I2C
