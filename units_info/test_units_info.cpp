@@ -28,7 +28,7 @@ void print_info(const unit_info_i2c &info) {
   std::cout << "addr: 0x" << info.address << '\n';
   std::cout << "freq: " << std::dec << info.frequency << '\n';
   std::cout << "offset: 0x" << std::hex << info.axi_offset << '\n';
-  if (info.parent_switch.uid != 0) {
+  if (info.parent_switch.is_present) {
     std::cout << "switch uid: 0x" << std::hex << info.parent_switch.uid << '\n';
     std::cout << "switch port:" << std::dec << info.parent_switch.port << '\n';
   }

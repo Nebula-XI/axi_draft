@@ -9,6 +9,7 @@ struct i2c_parent_switch {
       : uid{_uid}, port{_port} {}
   const std::size_t uid{};
   const int port{-1};
+  const bool is_present{bool(uid)};
 };
 
 /// параметры узла I2C
