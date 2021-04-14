@@ -67,9 +67,10 @@ static const std::string g_config{
 int main(int argc, char *argv[]) try {
   std::cout << std::string(32, '-') << '\n';
   // делаем разбор конфигурации для узлов I2C, SPI, GPIO
-  units_info_i2c units_info_i2c{g_config};
-  units_info_spi units_info_spi{g_config};
-  units_info_gpio units_info_gpio{g_config};
+  units_info_i2c_parser units_info_i2c{g_config};
+  units_info_spi_parser units_info_spi{g_config};
+  units_info_gpio_parser units_info_gpio{g_config};
+  units_info_ddr_parser units_info_ddr{g_config};
 
   // получаем описание всех узлов I2C
   auto i2c_info_list = units_info_i2c.get_info();

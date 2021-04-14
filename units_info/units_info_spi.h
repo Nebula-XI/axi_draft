@@ -22,7 +22,8 @@ struct unit_info_spi : unit_info_base {
 using units_info_spi_list = units_info_list<unit_info_spi>;
 
 /// класс формирователь информации об узлах SPI
-class units_info_spi : public units_info_base<units_info_list, unit_info_spi> {
+class units_info_spi_parser
+    : public units_info_base<units_info_list, unit_info_spi> {
   void parser(const std::string config) override {
     // TODO: add configuration parser
     _info_list.emplace_back("LMX2594", 0x00000600, 1,
@@ -35,7 +36,7 @@ class units_info_spi : public units_info_base<units_info_list, unit_info_spi> {
 
  public:
   /// конструктор
-  units_info_spi(const std::string &config) : units_info_base{config} {
+  units_info_spi_parser(const std::string &config) : units_info_base{config} {
     parser(config);
   }
 };

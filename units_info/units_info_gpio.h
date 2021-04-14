@@ -17,7 +17,7 @@ struct unit_info_gpio : unit_info_base {
 using units_info_gpio_list = units_info_list<unit_info_gpio>;
 
 /// класс формирователь информации об узлах GPIO
-class units_info_gpio
+class units_info_gpio_parser
     : public units_info_base<units_info_list, unit_info_gpio> {
   void parser(const std::string config) override {
     // TODO: add configuration parser
@@ -27,7 +27,7 @@ class units_info_gpio
 
  public:
   /// конструктор
-  units_info_gpio(const std::string &config) : units_info_base{config} {
+  units_info_gpio_parser(const std::string &config) : units_info_base{config} {
     parser(config);
   }
 };

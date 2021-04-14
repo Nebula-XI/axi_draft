@@ -22,7 +22,8 @@ struct unit_info_i2c : unit_info_base {
 using units_info_i2c_list = units_info_list<unit_info_i2c>;
 
 /// класс формирователь информации об узлах I2C
-class units_info_i2c : public units_info_base<units_info_list, unit_info_i2c> {
+class units_info_i2c_parser
+    : public units_info_base<units_info_list, unit_info_i2c> {
   void parser(const std::string config) override {
     // TODO: add configuration parser
     _info_list.emplace_back("INA218", 0x00000100, 0x32,
@@ -35,7 +36,7 @@ class units_info_i2c : public units_info_base<units_info_list, unit_info_i2c> {
 
  public:
   /// конструктор
-  units_info_i2c(const std::string &config) : units_info_base{config} {
+  units_info_i2c_parser(const std::string &config) : units_info_base{config} {
     parser(config);
   }
 };

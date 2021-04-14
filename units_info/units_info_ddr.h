@@ -17,14 +17,15 @@ struct unit_info_ddr : unit_info_base {
 using units_info_ddr_list = units_info_list<unit_info_ddr>;
 
 /// класс формирователь информации об узлах DDR
-class units_info_ddr : public units_info_base<units_info_list, unit_info_ddr> {
+class units_info_ddr_parser
+    : public units_info_base<units_info_list, unit_info_ddr> {
   void parser(const std::string config) override {
     // TODO: add configuration parser
   }
 
  public:
   /// конструктор
-  units_info_ddr(const std::string &config) : units_info_base{config} {
+  units_info_ddr_parser(const std::string &config) : units_info_base{config} {
     parser(config);
   }
 };
