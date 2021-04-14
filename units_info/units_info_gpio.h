@@ -20,16 +20,21 @@ struct unit_info_gpio : unit_info_base {
 };
 
 /// список параметров узлов GPIO
-using units_info_gpio_list = std::vector<unit_info_gpio>;
+using units_info_gpio_list = units_info_list<unit_info_gpio>;
 
 /// класс формирователь информации об узлах GPIO
-class units_info_gpio : public units_info_base<units_info_gpio_list> {
- public:
-  /// конструктор
-  units_info_gpio(const std::string &config) {
+class units_info_gpio
+    : public units_info_base<units_info_list, unit_info_gpio> {
+  void parser(const std::string config) override {
     // TODO: add configuration parser
     _info_list.emplace_back("GPIO0", 0x00000800);  // FIXME: пример
     _info_list.emplace_back("GPIO1", 0x00001000);  // FIXME: пример
+  }
+
+ public:
+  /// конструктор
+  units_info_gpio(const std::string &config) : units_info_base{config} {
+    parser(config);
   }
 };
 

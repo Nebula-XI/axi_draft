@@ -27,13 +27,11 @@ struct unit_info_i2c : unit_info_base {
 };
 
 /// список параметров узлов I2C
-using units_info_i2c_list = std::vector<unit_info_i2c>;
+using units_info_i2c_list = units_info_list<unit_info_i2c>;
 
 /// класс формирователь информации об узлах I2C
-class units_info_i2c : public units_info_base<units_info_i2c_list> {
- public:
-  /// конструктор
-  units_info_i2c(const std::string &config) {
+class units_info_i2c : public units_info_base<units_info_list, unit_info_i2c> {
+  void parser(const std::string config) override {
     // TODO: add configuration parser
     _info_list.emplace_back("INA218", 0x00000100, 0x32,
                             200_kHz);  // FIXME: пример
@@ -41,6 +39,12 @@ class units_info_i2c : public units_info_base<units_info_i2c_list> {
                             200_kHz);  // FIXME: пример
     _info_list.emplace_back("LTC2991", 0x00000400, 0x53,
                             200_kHz);  // FIXME: пример
+  }
+
+ public:
+  /// конструктор
+  units_info_i2c(const std::string &config) : units_info_base{config} {
+    parser(config);
   }
 };
 

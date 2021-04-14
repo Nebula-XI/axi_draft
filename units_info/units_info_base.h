@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -54,15 +55,35 @@ struct unit_info_base {
   }
 };
 
+/// список параметров узлов
+template <typename unit_info_type>
+using units_info_list = std::vector<unit_info_type>;
+
 /// класс формирователь информации об устройствах
-template <typename units_info_type>
+// template <typename units_info_type>
+template <template <typename> typename units_info_list, typename unit_info_type>
 class units_info_base {
  public:
-  using value_type = units_info_type;
+  using list_type = units_info_list<unit_info_type>;
+  using value_type = unit_info_type;
+  units_info_base() = delete;
   virtual ~units_info_base() noexcept = default;
-  value_type get_info() const { return _info_list; }
-  value_type find_info(std::size_t id) const {
-    value_type info_list{};
+  /// запрос списка параметров узлов
+  list_type get_info() const { return _info_list; }
+  /// запрос параметров узла по заданному оффсету
+  std::optional<value_type> get_info(std::size_t axi_offset) const {
+    std::optional<value_type> result{};
+    for (const auto &info : _info_list) {
+      if (info.axi_offset == axi_offset) {
+        result.emplace(info);
+        break;
+      }
+    }
+    return result;
+  }
+  /// поиск узлов по заданному идентификатору
+  list_type find_info(std::size_t id) const {
+    list_type info_list{};
     for (const auto &info : _info_list) {
       if (info.id != id) {
         continue;
@@ -71,13 +92,17 @@ class units_info_base {
     }
     return info_list;
   }
-  value_type find_info(const std::string &name) const {
+  /// поиск узлов по заданному имени
+  list_type find_info(const std::string &name) const {
     return find_info(units_info_make_id(name));
   }
 
  protected:
-  value_type _info_list{};
-  units_info_base() = default;
+  list_type _info_list{};
+  units_info_base(const std::string &config) { parser(config); }
+  virtual void parser(const std::string config) {
+    // TODO: add configuration parser
+  }
 };
 
 }  // namespace InSys
