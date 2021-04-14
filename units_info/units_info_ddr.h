@@ -7,9 +7,10 @@ namespace InSys {
 /// параметры узла DDR
 struct unit_info_ddr : unit_info_base {
   unit_info_ddr() = delete;  //< контруктор по умолчанию
-  unit_info_ddr(const std::string &_name, std::size_t _axi_offset)
-      : unit_info_base{_name, _axi_offset} {}  //< размещающий
-                                               //конструктор
+  unit_info_ddr(const std::string &_name, const std::string &_label,
+                std::size_t _axi_offset)
+      : unit_info_base{_name, _label, _axi_offset} {}  //< размещающий
+                                                       //конструктор
   inline static const std::string unit{"ddr"};
 };
 

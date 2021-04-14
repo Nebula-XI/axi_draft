@@ -28,21 +28,25 @@ constexpr unsigned long long operator"" _GHz(unsigned long long value) {
 }
 
 /// функция формирования уникального идентификатора узла
-inline auto units_info_make_id(const std::string &name) noexcept {
-  return std::hash<std::string>{}(name);
+inline auto units_info_make_id(const std::string &name,
+                               const std::string &lable) noexcept {
+  return std::hash<std::string>{}(name + lable);
 }
 
 /// базовая информация присущая всем узлам
 struct unit_info_base {
   unit_info_base() = delete;  //< контруктор по умолчанию
-  unit_info_base(const std::string &_name, std::size_t _axi_offset)
-      : id{units_info_make_id(_name)},
+  unit_info_base(const std::string &_name, const std::string &_label,
+                 std::size_t _axi_offset)
+      : id{units_info_make_id(_name, _label)},
         name{_name},
+        label{_label},
         axi_offset{_axi_offset} {}  //< размещающий
                                     //конструктор
   virtual ~unit_info_base() noexcept = default;
   const std::size_t id{};  //< уникальный идентификатор узла
-  const std::string name{};  //< имя узла
+  const std::string name{};   //< имя узла
+  const std::string label{};  //< метка узла
   const std::size_t axi_offset{};  //< смещение в адресном пространстве
 };
 
@@ -85,7 +89,14 @@ class units_info_base {
   }
   /// поиск узлов по заданному имени
   list_type find_info(const std::string &name) const {
-    return find_info(units_info_make_id(name));
+    list_type info_list{};
+    for (const auto &info : _info_list) {
+      if (info.name != name) {
+        continue;
+      }
+      info_list.push_back(info);
+    }
+    return info_list;
   }
 
  protected:

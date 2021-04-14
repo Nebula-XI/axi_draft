@@ -7,9 +7,9 @@ namespace InSys {
 /// параметры узла I2C
 struct unit_info_i2c : unit_info_base {
   unit_info_i2c() = delete;  //< контруктор по умолчанию
-  unit_info_i2c(const std::string &_name, std::size_t _axi_offset, int _address,
-                double _frequency)
-      : unit_info_base{_name, _axi_offset},
+  unit_info_i2c(const std::string &_name, const std::string &_label,
+                std::size_t _axi_offset, int _address, double _frequency)
+      : unit_info_base{_name, _label, _axi_offset},
         address{_address},
         frequency{_frequency} {}  //< размещающий
                                   //конструктор
@@ -26,11 +26,11 @@ class units_info_i2c_parser
     : public units_info_base<units_info_list, unit_info_i2c> {
   void parser(const std::string config) override {
     // TODO: add configuration parser
-    _info_list.emplace_back("INA218", 0x00000100, 0x32,
+    _info_list.emplace_back("INA218", "DD5", 0x00000100, 0x32,
                             200_kHz);  // FIXME: пример
-    _info_list.emplace_back("INA218", 0x00000200, 0x48,
+    _info_list.emplace_back("INA218", "DD6", 0x00000200, 0x48,
                             200_kHz);  // FIXME: пример
-    _info_list.emplace_back("LTC2991", 0x00000400, 0x53,
+    _info_list.emplace_back("LTC2991", "DD7", 0x00000400, 0x53,
                             200_kHz);  // FIXME: пример
   }
 

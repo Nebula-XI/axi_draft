@@ -8,6 +8,7 @@
 #include "units_info_spi.h"
 
 using namespace InSys;
+using namespace std::string_literals;
 
 void print_info_list_empty(const std::string &unit_name) {
   std::cout << unit_name << " unit list is empty" << '\n';
@@ -21,6 +22,7 @@ void print_info_not_found(const std::string &unit_name) {
 
 void print_info(const unit_info_i2c &info) {
   std::cout << "unit name: " << info.name << '\n';
+  std::cout << "unit label: " << info.label << '\n';
   std::cout << "unit type: " << info.unit << '\n';
   std::cout << "unit id: 0x" << std::hex << info.id << '\n';
   std::cout << "unit address: 0x" << info.address << '\n';
@@ -31,6 +33,7 @@ void print_info(const unit_info_i2c &info) {
 
 void print_info(const unit_info_spi &info) {
   std::cout << "unit name: " << info.name << '\n';
+  std::cout << "unit label: " << info.label << '\n';
   std::cout << "unit type: " << info.unit << '\n';
   std::cout << "unit id: 0x" << std::hex << info.id << '\n';
   std::cout << "unit chip select: 0x" << info.chip_select << '\n';
@@ -41,6 +44,7 @@ void print_info(const unit_info_spi &info) {
 
 void print_info(const unit_info_gpio &info) {
   std::cout << "unit name: " << info.name << '\n';
+  std::cout << "unit label: " << info.label << '\n';
   std::cout << "unit type: " << info.unit << '\n';
   std::cout << "unit id: 0x" << std::hex << info.id << '\n';
   std::cout << "unit axi offset: 0x" << info.axi_offset << '\n';
@@ -73,6 +77,7 @@ int main(int argc, char *argv[]) try {
   units_info_gpio_parser units_info_gpio{g_config};
   units_info_ddr_parser units_info_ddr{g_config};
 
+  std::cout << "EXAMPLE [1] - get all I2C units:\n";
   // получаем описание всех узлов I2C
   auto i2c_info_list = units_info_i2c.get_info();
   if (i2c_info_list.empty()) {
@@ -85,6 +90,7 @@ int main(int argc, char *argv[]) try {
       print_info(info);
     }
 
+  std::cout << "EXAMPLE [2] - get all SPI units:\n";
   // получаем описание всех узлов SPI
   auto spi_info_list = units_info_spi.get_info();
   if (spi_info_list.empty()) {
@@ -97,6 +103,7 @@ int main(int argc, char *argv[]) try {
       print_info(info);
     }
 
+  std::cout << "EXAMPLE [3] - get all GPIO units:\n";
   // получаем описание всех узлов GPIO
   auto gpio_info_list = units_info_gpio.get_info();
   if (gpio_info_list.empty()) {
@@ -109,8 +116,9 @@ int main(int argc, char *argv[]) try {
       print_info(info);
     }
 
+  std::cout << "EXAMPLE [4] - get I2C units by ID:\n";
   // формируем ID для INA218
-  auto ina218_id = units_info_make_id("INA218");
+  auto ina218_id = units_info_make_id("INA218", "DD6");
   // поиск всех узлов с соответствующим ID
   auto ina218_info_list = units_info_i2c.find_info(ina218_id);
   if (ina218_info_list.empty()) {
@@ -123,6 +131,7 @@ int main(int argc, char *argv[]) try {
       print_info(info);
     }
 
+  std::cout << "EXAMPLE [5] - get SPI units by name:\n";
   // поиск всех узлов с соответствующим именем
   auto lmx2594_info_list = units_info_spi.find_info("LMX2594");
   if (lmx2594_info_list.empty()) {
@@ -135,6 +144,7 @@ int main(int argc, char *argv[]) try {
       print_info(info);
     }
 
+  std::cout << "EXAMPLE [6] - get I2C units by offset:\n";
   // получаем описание I2C узла с заданным оффсетом
   auto i2c_info = units_info_i2c.get_info(0x00000100);
   if (i2c_info.has_value()) {
@@ -145,6 +155,7 @@ int main(int argc, char *argv[]) try {
     print_info_not_found(unit_info_i2c::unit);
   }
 
+  std::cout << "EXAMPLE [7] - any units list:\n";
   // обобщенный список параметров узлов
   units_info_any_list units_info_any_list{};
   // заполняем список параметрами узлов I2C
