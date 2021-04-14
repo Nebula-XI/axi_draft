@@ -38,13 +38,13 @@ struct unit_info_base {
   unit_info_base() = delete;  //< контруктор по умолчанию
   unit_info_base(const std::string &_name, const std::string &_label,
                  std::size_t _axi_offset)
-      : id{units_info_make_id(_name, _label)},
+      : uid{units_info_make_id(_name, _label)},
         name{_name},
         label{_label},
         axi_offset{_axi_offset} {}  //< размещающий
                                     //конструктор
   virtual ~unit_info_base() noexcept = default;
-  const std::size_t id{};  //< уникальный идентификатор узла
+  const std::size_t uid{};  //< уникальный идентификатор узла
   const std::string name{};   //< имя узла
   const std::string label{};  //< метка узла
   const std::size_t axi_offset{};  //< смещение в адресном пространстве
@@ -66,7 +66,7 @@ class units_info_base {
   /// запрос списка параметров узлов
   list_type get_info() const { return _info_list; }
   /// запрос параметров узла по заданному оффсету
-  std::optional<value_type> get_info(std::size_t axi_offset) const {
+  std::optional<value_type> get_info_by_offset(std::size_t axi_offset) const {
     std::optional<value_type> result{};
     for (const auto &info : _info_list) {
       if (info.axi_offset == axi_offset) {
@@ -77,18 +77,18 @@ class units_info_base {
     return result;
   }
   /// поиск узлов по заданному идентификатору
-  list_type find_info(std::size_t id) const {
-    list_type info_list{};
+  std::optional<value_type> get_info_by_id(std::size_t uid) const {
+    std::optional<value_type> result{};
     for (const auto &info : _info_list) {
-      if (info.id != id) {
-        continue;
+      if (info.uid == uid) {
+        result.emplace(info);
+        break;
       }
-      info_list.push_back(info);
     }
-    return info_list;
+    return result;
   }
   /// поиск узлов по заданному имени
-  list_type find_info(const std::string &name) const {
+  list_type find_info_by_name(const std::string &name) const {
     list_type info_list{};
     for (const auto &info : _info_list) {
       if (info.name != name) {

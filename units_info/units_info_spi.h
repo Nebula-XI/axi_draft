@@ -11,8 +11,7 @@ struct unit_info_spi : unit_info_base {
                 std::size_t _axi_offset, int _chip_select, double _clock)
       : unit_info_base{_name, _label, _axi_offset},
         chip_select{_chip_select},
-        clock{_clock} {}    //< размещающий
-                            //конструктор
+        clock{_clock} {}    //< размещающий конструктор
   const int chip_select{};  //< выбор кристала
   const double clock{};     //< частота
   inline static const std::string unit{"spi"};

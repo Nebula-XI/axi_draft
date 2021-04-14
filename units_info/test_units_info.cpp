@@ -21,53 +21,42 @@ void print_info_not_found(const std::string &unit_name) {
 }
 
 void print_info(const unit_info_i2c &info) {
-  std::cout << "unit name: " << info.name << '\n';
-  std::cout << "unit label: " << info.label << '\n';
-  std::cout << "unit type: " << info.unit << '\n';
-  std::cout << "unit id: 0x" << std::hex << info.id << '\n';
-  std::cout << "unit address: 0x" << info.address << '\n';
-  std::cout << "unit frequency: " << std::dec << info.frequency << '\n';
-  std::cout << "unit axi offset: 0x" << std::hex << info.axi_offset << '\n';
+  std::cout << "name: " << info.name << '\n';
+  std::cout << "label: " << info.label << '\n';
+  std::cout << "type: " << info.unit << '\n';
+  std::cout << "uid: 0x" << std::hex << info.uid << '\n';
+  std::cout << "addr: 0x" << info.address << '\n';
+  std::cout << "freq: " << std::dec << info.frequency << '\n';
+  std::cout << "offset: 0x" << std::hex << info.axi_offset << '\n';
+  if (info.parent_switch.uid != 0) {
+    std::cout << "switch uid: 0x" << std::hex << info.parent_switch.uid << '\n';
+    std::cout << "switch port:" << std::dec << info.parent_switch.port << '\n';
+  }
   std::cout << std::string(32, '-') << '\n';
 }
 
 void print_info(const unit_info_spi &info) {
-  std::cout << "unit name: " << info.name << '\n';
-  std::cout << "unit label: " << info.label << '\n';
-  std::cout << "unit type: " << info.unit << '\n';
-  std::cout << "unit id: 0x" << std::hex << info.id << '\n';
-  std::cout << "unit chip select: 0x" << info.chip_select << '\n';
-  std::cout << "unit clock: " << std::dec << info.clock << '\n';
-  std::cout << "unit axi offset: 0x" << std::hex << info.axi_offset << '\n';
+  std::cout << "name: " << info.name << '\n';
+  std::cout << "label: " << info.label << '\n';
+  std::cout << "type: " << info.unit << '\n';
+  std::cout << "uid: 0x" << std::hex << info.uid << '\n';
+  std::cout << "cs: 0x" << info.chip_select << '\n';
+  std::cout << "clk: " << std::dec << info.clock << '\n';
+  std::cout << "offset: 0x" << std::hex << info.axi_offset << '\n';
   std::cout << std::string(32, '-') << '\n';
 }
 
 void print_info(const unit_info_gpio &info) {
-  std::cout << "unit name: " << info.name << '\n';
-  std::cout << "unit label: " << info.label << '\n';
-  std::cout << "unit type: " << info.unit << '\n';
-  std::cout << "unit id: 0x" << std::hex << info.id << '\n';
-  std::cout << "unit axi offset: 0x" << info.axi_offset << '\n';
+  std::cout << "name: " << info.name << '\n';
+  std::cout << "label: " << info.label << '\n';
+  std::cout << "type: " << info.unit << '\n';
+  std::cout << "uid: 0x" << std::hex << info.uid << '\n';
+  std::cout << "offset: 0x" << info.axi_offset << '\n';
   std::cout << std::string(32, '-') << '\n';
 }
 
 // описание конфигурации
-static const std::string g_config{
-    "[I2C]\nunits = INA218_0, INA218_1, LTC2991_0\n\n[SPI]\nunits = LMX2594_0, "
-    "LTC6953_0, LMX2594_1\n\n[GPIO]\nunits = GPIO_0, "
-    "GPIO_1\n\n[INA218_0]\nname = INA218\nid = 0xe0d116e870d116c1\naxi_offset "
-    "= 0x100\nunit = i2c\naddr = 0x32\nfreq = 200000\n\n[INA218_1]\nname = "
-    "INA218\nid = 0xe0d116e870d116c1\naxi_offset = 0x200\nunit = i2c\naddr = "
-    "0x48\nfreq = 200000\n\n[LTC2991_0]\nname = LTC2991\nid = "
-    "0x62ef2330732ddc24\naxi_offset = 0x400\nunit = i2c\naddr = 0x53\nfreq = "
-    "200000\n\n[LMX2594_0]\nname = LMX2594\nid = "
-    "0xffa287061f44f906\naxi_offset = 0x600\nunit = spi\ncs = 0x1\nclk = "
-    "1e+07\n\n[LTC6953_0]\nname = LTC6953\nid = 0x624d49ef1349a8b0\naxi_offset "
-    "= 0x800\nunit = spi\ncs = 0x2\nclk = 1e+07\n\n[LMX2594_1]\nname = "
-    "LMX2594\nid = 0xffa287061f44f906\naxi_offset = 0x1200\nunit = spi\ncs = "
-    "0x3\nclk = 2e+07\n\n[GPIO_0]\nname = GPIO0\nid = "
-    "0x14b48f04c3c3c704\naxi_offset = 0x800\nunit = gpio\n\n[GPIO_1]\nname = "
-    "GPIO1\nid = 0x619ca3c738df1080\naxi_offset = 0x1000\nunit = gpio\n"};
+static const std::string g_config{"TODO: add configuration"};
 
 int main(int argc, char *argv[]) try {
   std::cout << std::string(32, '-') << '\n';
@@ -116,24 +105,22 @@ int main(int argc, char *argv[]) try {
       print_info(info);
     }
 
-  std::cout << "EXAMPLE [4] - get I2C units by ID:\n";
+  std::cout << "EXAMPLE [4] - get I2C unit by ID:\n";
   // формируем ID для INA218
   auto ina218_id = units_info_make_id("INA218", "DD6");
   // поиск всех узлов с соответствующим ID
-  auto ina218_info_list = units_info_i2c.find_info(ina218_id);
-  if (ina218_info_list.empty()) {
-    // список узлов пуст
-    print_info_list_empty(unit_info_i2c::unit);
-  } else
-    // обходим все найденные узлы
-    for (const auto &info : ina218_info_list) {
-      // выводим описание узла в консоль
-      print_info(info);
-    }
+  auto ina218_info = units_info_i2c.get_info_by_id(ina218_id);
+  if (ina218_info.has_value()) {
+    // выводим описание узла в консоль
+    print_info(ina218_info.value());
+  } else {
+    // узел не найден
+    print_info_not_found(unit_info_i2c::unit);
+  }
 
   std::cout << "EXAMPLE [5] - get SPI units by name:\n";
   // поиск всех узлов с соответствующим именем
-  auto lmx2594_info_list = units_info_spi.find_info("LMX2594");
+  auto lmx2594_info_list = units_info_spi.find_info_by_name("LMX2594");
   if (lmx2594_info_list.empty()) {
     // список узлов пуст
     print_info_list_empty(unit_info_spi::unit);
@@ -146,7 +133,7 @@ int main(int argc, char *argv[]) try {
 
   std::cout << "EXAMPLE [6] - get I2C units by offset:\n";
   // получаем описание I2C узла с заданным оффсетом
-  auto i2c_info = units_info_i2c.get_info(0x00000100);
+  auto i2c_info = units_info_i2c.get_info_by_offset(0x00000100);
   if (i2c_info.has_value()) {
     // выводим описание узла в консоль
     print_info(i2c_info.value());

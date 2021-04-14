@@ -1,0 +1,210 @@
+[olek@2122-08 build]$ ./test_units_info 
+--------------------------------
+EXAMPLE [1] - get all I2C units:
+name: TCA9548A
+label: DD12
+type: i2c
+uid: 0x5e214accc577db45
+addr: 0x15
+freq: 200000
+offset: 0x20
+--------------------------------
+name: TCA9548A
+label: DD43
+type: i2c
+uid: 0x5f2b70b18e747473
+addr: 0x47
+freq: 200000
+offset: 0x40
+switch uid: 0x5e214accc577db45
+switch port:2
+--------------------------------
+name: INA218
+label: DD5
+type: i2c
+uid: 0x4cde0cde194ebb92
+addr: 0x32
+freq: 200000
+offset: 0x100
+--------------------------------
+name: INA218
+label: DD6
+type: i2c
+uid: 0xe257722483c983e0
+addr: 0x48
+freq: 200000
+offset: 0x200
+switch uid: 0x5f2b70b18e747473
+switch port:0
+--------------------------------
+name: LTC2991
+label: DD7
+type: i2c
+uid: 0x60b9b109abc30d61
+addr: 0x53
+freq: 200000
+offset: 0x400
+switch uid: 0x5f2b70b18e747473
+switch port:7
+--------------------------------
+EXAMPLE [2] - get all SPI units:
+name: LMX2594
+label: DD1
+type: spi
+uid: 0xbb4fd479ec780716
+cs: 0x1
+clk: 1e+07
+offset: 0x600
+--------------------------------
+name: LTC6953
+label: DD2
+type: spi
+uid: 0x43c1e7229244c14e
+cs: 0x2
+clk: 1e+07
+offset: 0x800
+--------------------------------
+name: LMX2594
+label: DD3
+type: spi
+uid: 0x8cd84cd474962024
+cs: 0x3
+clk: 2e+07
+offset: 0x1200
+--------------------------------
+EXAMPLE [3] - get all GPIO units:
+name: GPIO0
+label: 
+type: gpio
+uid: 0x14b48f04c3c3c704
+offset: 0x800
+--------------------------------
+name: GPIO1
+label: 
+type: gpio
+uid: 0x619ca3c738df1080
+offset: 0x1000
+--------------------------------
+EXAMPLE [4] - get I2C unit by ID:
+name: INA218
+label: DD6
+type: i2c
+uid: 0xe257722483c983e0
+addr: 0x48
+freq: 200000
+offset: 0x200
+switch uid: 0x5f2b70b18e747473
+switch port:0
+--------------------------------
+EXAMPLE [5] - get SPI units by name:
+name: LMX2594
+label: DD1
+type: spi
+uid: 0xbb4fd479ec780716
+cs: 0x1
+clk: 1e+07
+offset: 0x600
+--------------------------------
+name: LMX2594
+label: DD3
+type: spi
+uid: 0x8cd84cd474962024
+cs: 0x3
+clk: 2e+07
+offset: 0x1200
+--------------------------------
+EXAMPLE [6] - get I2C units by offset:
+name: INA218
+label: DD5
+type: i2c
+uid: 0x4cde0cde194ebb92
+addr: 0x32
+freq: 200000
+offset: 0x100
+--------------------------------
+EXAMPLE [7] - any units list:
+name: TCA9548A
+label: DD12
+type: i2c
+uid: 0x5e214accc577db45
+addr: 0x15
+freq: 200000
+offset: 0x20
+--------------------------------
+name: TCA9548A
+label: DD43
+type: i2c
+uid: 0x5f2b70b18e747473
+addr: 0x47
+freq: 200000
+offset: 0x40
+switch uid: 0x5e214accc577db45
+switch port:2
+--------------------------------
+name: INA218
+label: DD5
+type: i2c
+uid: 0x4cde0cde194ebb92
+addr: 0x32
+freq: 200000
+offset: 0x100
+--------------------------------
+name: INA218
+label: DD6
+type: i2c
+uid: 0xe257722483c983e0
+addr: 0x48
+freq: 200000
+offset: 0x200
+switch uid: 0x5f2b70b18e747473
+switch port:0
+--------------------------------
+name: LTC2991
+label: DD7
+type: i2c
+uid: 0x60b9b109abc30d61
+addr: 0x53
+freq: 200000
+offset: 0x400
+switch uid: 0x5f2b70b18e747473
+switch port:7
+--------------------------------
+name: LMX2594
+label: DD1
+type: spi
+uid: 0xbb4fd479ec780716
+cs: 0x1
+clk: 1e+07
+offset: 0x600
+--------------------------------
+name: LTC6953
+label: DD2
+type: spi
+uid: 0x43c1e7229244c14e
+cs: 0x2
+clk: 1e+07
+offset: 0x800
+--------------------------------
+name: LMX2594
+label: DD3
+type: spi
+uid: 0x8cd84cd474962024
+cs: 0x3
+clk: 2e+07
+offset: 0x1200
+--------------------------------
+name: GPIO0
+label: 
+type: gpio
+uid: 0x14b48f04c3c3c704
+offset: 0x800
+--------------------------------
+name: GPIO1
+label: 
+type: gpio
+uid: 0x619ca3c738df1080
+offset: 0x1000
+--------------------------------
+[olek@2122-08 build]$ 
+
+
