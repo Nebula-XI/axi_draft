@@ -67,6 +67,7 @@ int main(int argc, char *argv[]) try {
   units_info_ddr_parser units_info_ddr{g_config};
 
   std::cout << "EXAMPLE [1] - get all I2C units:\n";
+  std::cout << std::string(32, '-') << '\n';
   // получаем описание всех узлов I2C
   auto i2c_info_list = units_info_i2c.get_info();
   if (i2c_info_list.empty()) {
@@ -80,6 +81,7 @@ int main(int argc, char *argv[]) try {
     }
 
   std::cout << "EXAMPLE [2] - get all SPI units:\n";
+  std::cout << std::string(32, '-') << '\n';
   // получаем описание всех узлов SPI
   auto spi_info_list = units_info_spi.get_info();
   if (spi_info_list.empty()) {
@@ -93,6 +95,7 @@ int main(int argc, char *argv[]) try {
     }
 
   std::cout << "EXAMPLE [3] - get all GPIO units:\n";
+  std::cout << std::string(32, '-') << '\n';
   // получаем описание всех узлов GPIO
   auto gpio_info_list = units_info_gpio.get_info();
   if (gpio_info_list.empty()) {
@@ -106,6 +109,7 @@ int main(int argc, char *argv[]) try {
     }
 
   std::cout << "EXAMPLE [4] - get I2C unit by UID:\n";
+  std::cout << std::string(32, '-') << '\n';
   // формируем ID для INA218
   auto ina218_uid = units_info_make_uid("INA218", "DD6");
   // поиск всех узлов с соответствующим ID
@@ -119,6 +123,7 @@ int main(int argc, char *argv[]) try {
   }
 
   std::cout << "EXAMPLE [5] - get SPI units by name:\n";
+  std::cout << std::string(32, '-') << '\n';
   // поиск всех узлов с соответствующим именем
   auto lmx2594_info_list = units_info_spi.find_info_by_name("LMX2594");
   if (lmx2594_info_list.empty()) {
@@ -132,6 +137,7 @@ int main(int argc, char *argv[]) try {
     }
 
   std::cout << "EXAMPLE [6] - get I2C units by offset:\n";
+  std::cout << std::string(32, '-') << '\n';
   // получаем описание I2C узла с заданным оффсетом
   auto i2c_info = units_info_i2c.get_info_by_offset(0x00000100);
   if (i2c_info.has_value()) {
@@ -143,6 +149,7 @@ int main(int argc, char *argv[]) try {
   }
 
   std::cout << "EXAMPLE [7] - get I2C units behind switch and I2C switch:\n";
+  std::cout << std::string(32, '-') << '\n';
   // получаем описание всех узлов I2C которые находятся за switch'ами
   auto i2c_info_behind_switch_list = units_info_i2c.find_info_behind_switch();
   if (i2c_info_behind_switch_list.empty()) {
@@ -165,6 +172,7 @@ int main(int argc, char *argv[]) try {
     }
 
   std::cout << "EXAMPLE [8] - any units list:\n";
+  std::cout << std::string(32, '-') << '\n';
   // обобщенный список параметров узлов
   units_info_any_list units_info_any_list{};
   // заполняем список параметрами узлов I2C
