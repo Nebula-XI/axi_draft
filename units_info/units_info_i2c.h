@@ -5,8 +5,8 @@
 namespace InSys {
 
 struct i2c_parent_switch {
-  i2c_parent_switch(std::size_t _uid = 0, int _port = -1)
-      : uid{_uid}, port{_port} {}
+  i2c_parent_switch() = default;
+  i2c_parent_switch(std::size_t _uid, int _port) : uid{_uid}, port{_port} {}
   const std::size_t uid{};
   const int port{-1};
   const bool is_present{bool(uid)};
@@ -58,7 +58,7 @@ class units_info_i2c_parser
   units_info_i2c_parser(const std::string &config) : units_info_base{config} {
     parser(config);
   }
-  /// поиск узлов по заданному имени
+  /// поиск узлов находящихся за I2C switch
   list_type find_info_behind_switch() const {
     list_type info_list{};
     for (const auto &info : _info_list) {

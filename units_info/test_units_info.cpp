@@ -142,17 +142,26 @@ int main(int argc, char *argv[]) try {
     print_info_not_found(unit_info_i2c::unit);
   }
 
-  std::cout << "EXAMPLE [7] - get I2C units behind switch:\n";
+  std::cout << "EXAMPLE [7] - get I2C units behind switch and I2C switch:\n";
   // получаем описание всех узлов I2C которые находятся за switch'ами
   auto i2c_info_behind_switch_list = units_info_i2c.find_info_behind_switch();
   if (i2c_info_behind_switch_list.empty()) {
     // список узлов пуст
     print_info_list_empty(unit_info_i2c::unit);
   } else
-    // обходим все узлы I2C
+    // обходим все узлы I2C находящиеся за switch'ом
     for (const auto &info : i2c_info_behind_switch_list) {
       // выводим описание каждого узла I2C в консоль
       print_info(info);
+      // получаем описание узла I2C switch
+      auto switch_info = units_info_i2c.get_info_by_uid(info.parent_switch.uid);
+      if (switch_info.has_value()) {
+        // выводим описание узла I2C switch в консоль
+        print_info(switch_info.value());
+      } else {
+        // узел I2C switch не найден
+        print_info_not_found(unit_info_i2c::unit);
+      }
     }
 
   std::cout << "EXAMPLE [8] - any units list:\n";
