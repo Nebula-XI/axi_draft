@@ -1,6 +1,7 @@
 
 #include <iostream>
 
+#include "units_info.h"
 #include "units_info_ddr.h"
 #include "units_info_gpio.h"
 #include "units_info_i2c.h"
@@ -143,6 +144,37 @@ int main(int argc, char *argv[]) try {
     // узел не найден
     print_info_not_found(unit_info_i2c::unit);
   }
+
+  // обобщенный список параметров узлов
+  units_info_any_list units_info_any_list{};
+  // заполняем список параметрами узлов I2C
+  for (const auto &info : i2c_info_list) {
+    units_info_any_list.emplace_back(info);
+  }
+  // заполняем список параметрами узлов SPI
+  for (const auto &info : spi_info_list) {
+    units_info_any_list.emplace_back(info);
+  }
+  // заполняем список параметрами узлов GPIO
+  for (const auto &info : gpio_info_list) {
+    units_info_any_list.emplace_back(info);
+  }
+  if (units_info_any_list.empty()) {
+    // обобщенный список узлов пуст
+    print_info_list_empty("any");
+  } else
+    // обходим все узлы в обобщенном списке
+    for (const auto &info : units_info_any_list) {
+      // выводим описание узла в консоль
+      if (info.type() == typeid(unit_info_i2c)) {
+        print_info(std::any_cast<unit_info_i2c>(info));
+      } else if (info.type() == typeid(unit_info_spi)) {
+        print_info(std::any_cast<unit_info_spi>(info));
+      }
+      if (info.type() == typeid(unit_info_gpio)) {
+        print_info(std::any_cast<unit_info_gpio>(info));
+      }
+    }
 
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
