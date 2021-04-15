@@ -40,7 +40,8 @@ struct unit_info_i2c_mux : unit_info_i2c_dev_base {
       : unit_info_i2c_dev_base{_name,      _label,      _address,
                                _frequency, _parent_uid, "i2c-mux"} {
     for (decltype(ports) port{}; port < ports; ++port) {
-      segments.emplace(make_units_info_uid{}(name, label, port), port);
+      segments.emplace(make_units_info_uid{}(name, label, std::to_string(port)),
+                       port);
     }
   }
   segments_map segments{};

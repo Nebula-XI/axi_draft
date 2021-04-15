@@ -35,6 +35,14 @@ void print_info(const unit_info_i2c_dev &info) {
   std::cout << "frequency: " << std::dec << info.frequency << '\n';
 }
 
+void print_info(const unit_info_i2c_mux &info) {
+  print_info(static_cast<unit_info_i2c_dev_base>(info));
+  for (const auto segment : info.segments) {
+    std::cout << "segment[" << std::dec << segment.second << "] uid: 0x"
+              << std::hex << segment.first << '\n';
+  }
+}
+
 template <typename parser>
 void example(std::string_view &&desc, const std::string_view &config) {
   print_line();
