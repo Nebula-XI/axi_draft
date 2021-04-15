@@ -30,28 +30,28 @@ label: DD12
 unit: i2c-mux
 uid: 0x72817096b3add412
 parent uid: 0x67b2bb229de97a83
-segment[0] uid: 0x196aeaaccf0ec35d
-segment[5] uid: 0x3c1029f7c6299cca
-segment[4] uid: 0x616995a95b458b81
-segment[3] uid: 0x825eb17f39af48f2
-segment[2] uid: 0xa7b81d30cec8ffc7
-segment[1] uid: 0xaca85a8551b1bd8f
-segment[7] uid: 0xb97e2594b666fbe5
-segment[6] uid: 0xda1052300b3684e2
+segment uid[0]: 0x196aeaaccf0ec35d
+segment uid[5]: 0x3c1029f7c6299cca
+segment uid[4]: 0x616995a95b458b81
+segment uid[3]: 0x825eb17f39af48f2
+segment uid[2]: 0xa7b81d30cec8ffc7
+segment uid[1]: 0xaca85a8551b1bd8f
+segment uid[7]: 0xb97e2594b666fbe5
+segment uid[6]: 0xda1052300b3684e2
 ----------------------------------------
 name: LTC4306
 label: DD45
 unit: i2c-mux
 uid: 0xdb1df3852808bd54
 parent uid: 0x72817096b3add412
-segment[1] uid: 0x8022fbca3b33570
-segment[7] uid: 0x1aaf8bb837c0aaf1
-segment[5] uid: 0x5540c13a3d219ebf
-segment[0] uid: 0x853b20d2c00b90aa
-segment[2] uid: 0x92375897c196cf22
-segment[4] uid: 0x9632916d9d9e045e
-segment[3] uid: 0xc444cadfe6cd152a
-segment[6] uid: 0xed69588652d670c4
+segment uid[1]: 0x8022fbca3b33570
+segment uid[7]: 0x1aaf8bb837c0aaf1
+segment uid[5]: 0x5540c13a3d219ebf
+segment uid[0]: 0x853b20d2c00b90aa
+segment uid[2]: 0x92375897c196cf22
+segment uid[4]: 0x9632916d9d9e045e
+segment uid[3]: 0xc444cadfe6cd152a
+segment uid[6]: 0xed69588652d670c4
 ----------------------------------------
 EXAMPLE [3] - get info i2c-dev units:
 ----------------------------------------
