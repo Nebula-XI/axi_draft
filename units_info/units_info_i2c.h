@@ -4,69 +4,99 @@
 
 namespace InSys {
 
-struct i2c_parent_switch {
-  i2c_parent_switch() = default;
-  i2c_parent_switch(std::size_t _uid, int _port) : uid{_uid}, port{_port} {}
-  const std::size_t uid{};
-  const int port{-1};
-  const bool is_present{bool(uid)};
+struct unit_info_axi_i2c : unit_info_axi_base {
+  using list = units_info_list<unit_info_axi_i2c>;
+  unit_info_axi_i2c(const std::string_view &_name, std::size_t _axi_offset)
+      : unit_info_axi_base{_name, {}, _axi_offset, "axi-i2c"} {}
 };
 
-/// параметры узла I2C
-struct unit_info_i2c : unit_info_base {
-  unit_info_i2c() = delete;  //< контруктор по умолчанию
-  unit_info_i2c(const std::string &_name, const std::string &_label,
-                std::size_t _axi_offset, int _address, double _frequency,
-                const i2c_parent_switch &_parent_switch = i2c_parent_switch{})
-      : unit_info_base{_name, _label, _axi_offset},
+struct unit_info_i2c_dev_base : unit_info_base {
+  unit_info_i2c_dev_base(const std::string_view &_name,
+                         const std::string_view &_label, uint32_t _address,
+                         double _frequency, std::size_t _parent_uid,
+                         const std::string_view &_unit)
+      : unit_info_base{_name, _label, _parent_uid, _unit},
         address{_address},
-        frequency{_frequency},
-        parent_switch{_parent_switch} {}  //< размещающий конструктор
-  const int address{};                    //< I2C адрес
-  const double frequency{};               //< I2C частота
-  const i2c_parent_switch parent_switch{};  //< I2C switch
-  inline static const std::string unit{"i2c"};
+        frequency{_frequency} {}
+  const uint32_t address{};
+  const double frequency{};
 };
 
-/// список параметров узлов I2C
-using units_info_i2c_list = units_info_list<unit_info_i2c>;
+struct unit_info_i2c_dev : unit_info_i2c_dev_base {
+  using list = units_info_list<unit_info_i2c_dev>;
+  unit_info_i2c_dev(const std::string_view &_name,
+                    const std::string_view &_label, uint32_t _address,
+                    double _frequency, std::size_t _parent_uid)
+      : unit_info_i2c_dev_base{_name,      _label,      _address,
+                               _frequency, _parent_uid, "i2c-dev"} {}
+};
 
-/// класс формирователь информации об узлах I2C
-class units_info_i2c_parser
-    : public units_info_base<units_info_list, unit_info_i2c> {
-  void parser(const std::string config) override {
+struct unit_info_i2c_mux : unit_info_i2c_dev_base {
+  using list = units_info_list<unit_info_i2c_mux>;
+  using segments_map = std::map<std::size_t, uint32_t>;
+  unit_info_i2c_mux(const std::string_view &_name,
+                    const std::string_view &_label, uint32_t _address,
+                    double _frequency, uint32_t ports, std::size_t _parent_uid)
+      : unit_info_i2c_dev_base{_name,      _label,      _address,
+                               _frequency, _parent_uid, "i2c-mux"} {
+    for (decltype(ports) port{}; port < ports; ++port) {
+      segments.emplace(make_units_info_uid{}(name, label, port), port);
+    }
+  }
+  segments_map segments{};
+};
+
+class unit_info_axi_i2c_parser
+    : public units_info_base<units_info_list, unit_info_axi_i2c> {
+  void parser(const std::string_view &config) override {
     // TODO: add configuration parser
-    _info_list.emplace_back("TCA9548A", "DD12", 0x00000020, 0x15,
-                            200_kHz);  // FIXME: пример
-    auto tca9548a_id = get_info_by_offset(0x00000020).value().uid;
-    _info_list.emplace_back(
-        "TCA9548A", "DD43", 0x00000040, 0x47, 200_kHz,
-        i2c_parent_switch{tca9548a_id, 2});  // FIXME: пример
-    tca9548a_id = get_info_by_offset(0x00000040).value().uid;
-    _info_list.emplace_back("INA218", "DD5", 0x00000100, 0x32,
-                            200_kHz);  // FIXME: пример
-    _info_list.emplace_back(
-        "INA218", "DD6", 0x00000200, 0x48, 200_kHz,
-        i2c_parent_switch{tca9548a_id, 0});  // FIXME: пример
-    _info_list.emplace_back(
-        "LTC2991", "DD7", 0x00000400, 0x53, 200_kHz,
-        i2c_parent_switch{tca9548a_id, 7});  // FIXME: пример
+    _info_list.emplace_back("I2C0", 0x00001000);
+    _info_list.emplace_back("I2C1", 0x00002000);
+    _info_list.emplace_back("I2C2", 0x00003000);
   }
 
  public:
-  /// конструктор
-  units_info_i2c_parser(const std::string &config) : units_info_base{config} {
+  unit_info_axi_i2c_parser(const std::string_view &config)
+      : units_info_base{config} {
     parser(config);
   }
-  /// поиск узлов находящихся за I2C switch
-  list_type find_info_behind_switch() const {
-    list_type info_list{};
-    for (const auto &info : _info_list) {
-      if (info.parent_switch.is_present) {
-        info_list.push_back(info);
-      }
-    }
-    return info_list;
+};
+
+class unit_info_i2c_mux_parser
+    : public units_info_base<units_info_list, unit_info_i2c_mux> {
+  void parser(const std::string_view &config) override {
+    // TODO: add configuration parser
+    _info_list.emplace_back("LTC4306", "DD12", 0x44, 200_kHz, 8,
+                            make_units_info_uid{}("I2C0"));
+    _info_list.emplace_back("LTC4306", "DD45", 0x44, 200_kHz, 8,
+                            make_units_info_uid{}("LTC4306", "DD12"));
+  }
+
+ public:
+  unit_info_i2c_mux_parser(const std::string_view &config)
+      : units_info_base{config} {
+    parser(config);
+  }
+};
+
+class unit_info_i2c_dev_parser
+    : public units_info_base<units_info_list, unit_info_i2c_dev> {
+  void parser(const std::string_view &config) override {
+    // TODO: add configuration parser
+    _info_list.emplace_back("INA218", "DD1", 0x44, 200_kHz,
+                            make_units_info_uid{}("I2C0"));
+    _info_list.emplace_back("LTC2991", "DD2", 0x45, 200_kHz,
+                            make_units_info_uid{}("I2C0"));
+    _info_list.emplace_back("INA218", "DD3", 0x49, 200_kHz,
+                            make_units_info_uid{}("I2C1"));
+    _info_list.emplace_back("INA218", "DD8", 0x49, 200_kHz,
+                            make_units_info_uid{}("LTC4306", "DD12"));
+  }
+
+ public:
+  unit_info_i2c_dev_parser(const std::string_view &config)
+      : units_info_base{config} {
+    parser(config);
   }
 };
 
