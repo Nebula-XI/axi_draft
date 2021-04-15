@@ -11,7 +11,6 @@
             "offset": "0x1000",
             "units": [
                 {
-                    // "id": "0xf6bb5ad6678eca90" = std::hash { name + label + enum number}
                     "name": "INA218",
                     "label": "DD2",
                     "addr": "0x32",
@@ -34,21 +33,20 @@
                     "label": "D13",
                     "addr": "0x53",
                     "freq": "400_kHz",
-                    // port select = enum position
                     "units": [
                         {
                             "name": "INA218",
                             "label": "D95",
                             "addr": "0x78",
-                            "freq": "100_kHz"
+                            "freq": "100_kHz",
+                            "port-sw": "0"
                         },
-                        {},
-                        {},
                         {
                             "name": "INA219",
                             "label": "D96",
                             "addr": "0x88",
-                            "freq": "100_kHz"
+                            "freq": "100_kHz",
+                            "port-sw": "7"
                         }
                     ]
                 }
@@ -57,7 +55,6 @@
         {
             "name": "spi",
             "offset": "0x2000",
-            // chip select = enum position
             "units": [
                 {
                     "name": "LMX2594",
