@@ -67,6 +67,6 @@ name: INA218
 label: DD8
 unit: i2c-dev
 uid: 0x3ad0d8e168308918
-parent uid: 0x72817096b3add412
+parent uid: 0x825eb17f39af48f2
 address: 0x49
 frequency: 200000

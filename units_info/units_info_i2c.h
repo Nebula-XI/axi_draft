@@ -89,8 +89,9 @@ class unit_info_i2c_dev_parser
                             make_units_info_uid{}("I2C0"));
     _info_list.emplace_back("INA218", "DD3", 0x49, 200_kHz,
                             make_units_info_uid{}("I2C1"));
-    _info_list.emplace_back("INA218", "DD8", 0x49, 200_kHz,
-                            make_units_info_uid{}("LTC4306", "DD12"));
+    _info_list.emplace_back(
+        "INA218", "DD8", 0x49, 200_kHz,
+        make_units_info_uid{}("LTC4306", "DD12", std::to_string(3)));
   }
 
  public:
