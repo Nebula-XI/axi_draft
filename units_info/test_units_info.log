@@ -2,24 +2,24 @@
 ----------------------------------------
 EXAMPLE [1] - get info axi-i2c units:
 ----------------------------------------
-name: I2C0
-label:
+name: I2C
+label: PORT0
 unit: axi-i2c
-uid: 0x67b2bb229de97a83
+uid: 0xc3352acec12fddbf
 parent uid: 0x0
 offset: 0x1000
 ----------------------------------------
-name: I2C1
-label:
+name: I2C
+label: PORT1
 unit: axi-i2c
-uid: 0xb1e713ce16b31930
+uid: 0x8856a47ed5748e9a
 parent uid: 0x0
 offset: 0x2000
 ----------------------------------------
-name: I2C2
-label:
+name: I2C
+label: PORT2
 unit: axi-i2c
-uid: 0xc3804c3d6924d656
+uid: 0x804c7ca3708aa026
 parent uid: 0x0
 offset: 0x3000
 ----------------------------------------

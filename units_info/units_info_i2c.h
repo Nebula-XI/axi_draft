@@ -6,8 +6,9 @@ namespace InSys {
 
 struct unit_info_axi_i2c : unit_info_axi_base {
   using list = units_info_list<unit_info_axi_i2c>;
-  unit_info_axi_i2c(const std::string_view &_name, std::size_t _axi_offset)
-      : unit_info_axi_base{_name, {}, _axi_offset, "axi-i2c"} {}
+  unit_info_axi_i2c(const std::string_view &_name,
+                    const std::string_view &_label, std::size_t _axi_offset)
+      : unit_info_axi_base{_name, _label, _axi_offset, "axi-i2c"} {}
 };
 
 struct unit_info_i2c_dev_base : unit_info_base {
@@ -51,9 +52,9 @@ class unit_info_axi_i2c_parser
     : public units_info_base<units_info_list, unit_info_axi_i2c> {
   void parser(const std::string_view &config) override {
     // TODO: add configuration parser
-    _info_list.emplace_back("I2C0", 0x00001000);
-    _info_list.emplace_back("I2C1", 0x00002000);
-    _info_list.emplace_back("I2C2", 0x00003000);
+    _info_list.emplace_back("I2C", "PORT0", 0x00001000);
+    _info_list.emplace_back("I2C", "PORT1", 0x00002000);
+    _info_list.emplace_back("I2C", "PORT2", 0x00003000);
   }
 
  public:
