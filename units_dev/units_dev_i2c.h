@@ -58,8 +58,14 @@ class unit_dev_i2c : public unit_dev_axi_i2c_interface,
   using list_type = units_dev_list<unit_dev_i2c>;
   unit_dev_i2c(const info_type& _info, unit_dev_axi_i2c_interface& _i2c)
       : unit_dev_base{_info}, i2c{_i2c} {}
-  std::size_t read() final { return i2c.read(); }
-  std::size_t write() final { return i2c.write(); }
+  std::size_t read() final {
+    // TODO: выполнить необходимые действия
+    return i2c.read();
+  }
+  std::size_t write() final {
+    // TODO: выполнить необходимые действия
+    return i2c.write();
+  }
 };
 
 }  // namespace InSys
