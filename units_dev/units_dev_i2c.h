@@ -8,14 +8,16 @@ namespace InSys {
 struct unit_dev_axi_i2c_interface : unit_dev_base_interface {};
 
 struct unit_dev_i2c_mux_interface : unit_dev_base_interface {
-  virtual std::size_t read() = 0;
-  virtual std::size_t write() = 0;
+  virtual void select(uint32_t segment) = 0;
 };
 
-class unit_dev_axi_i2c : public unit_dev_base<unit_info_axi_i2c> {
+class unit_dev_axi_i2c : unit_dev_axi_i2c_interface,
+                         public unit_dev_base<unit_info_axi_i2c> {
  public:
   using list_type = units_dev_list<unit_dev_axi_i2c>;
-  unit_dev_axi_i2c(const unit_info_axi_i2c& _info) : unit_dev_base{_info} {}
+  unit_dev_axi_i2c(const info_type& _info) : unit_dev_base{_info} {}
+  std::size_t read() override { return {}; }
+  std::size_t write() override { return {}; }
 };
 
 }  // namespace InSys

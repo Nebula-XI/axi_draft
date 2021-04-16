@@ -15,6 +15,8 @@ int main(int argc, char *argv[]) try {
   for (auto &dev_axi_i2c : dev_axi_i2c_list) {
     print_line();
     print_info(dev_axi_i2c.get_info());
+    dev_axi_i2c.read();
+    dev_axi_i2c.write();
   }
 
   return EXIT_SUCCESS;
