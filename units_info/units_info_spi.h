@@ -4,25 +4,11 @@
 
 namespace InSys {
 
-struct unit_info_axi_spi : unit_info_axi_base {
+struct unit_info_axi_spi final : unit_info_axi_base {
   using list = units_info_list<unit_info_axi_i2c>;
   unit_info_axi_spi(const std::string_view &_name,
                     const std::string_view &_label, unit_info_uid _axi_offset)
       : unit_info_axi_base{_name, _label, _axi_offset, "axi-spi"} {}
-};
-
-class unit_info_axi_spi_parser
-    : public units_info_base_parser<units_info_list, unit_info_axi_spi> {
-  void parser(const std::string_view &config) override {
-    // TODO: add configuration parser
-    _info_list.emplace_back("SPI", "PORT0", 0x00010000);
-    _info_list.emplace_back("SPI", "PORT1", 0x00020000);
-    _info_list.emplace_back("SPI", "PORT2", 0x00030000);
-  }
-
- public:
-  unit_info_axi_spi_parser() = default;
-  unit_info_axi_spi_parser(const std::string_view &config) { parser(config); }
 };
 
 struct unit_info_spi_dev_base : unit_info_base {
@@ -37,13 +23,27 @@ struct unit_info_spi_dev_base : unit_info_base {
   const double frequency{};
 };
 
-struct unit_info_spi_dev : unit_info_spi_dev_base {
+struct unit_info_spi_dev final : unit_info_spi_dev_base {
   using list = units_info_list<unit_info_spi_dev>;
   unit_info_spi_dev(const std::string_view &_name,
                     const std::string_view &_label, uint32_t _chip_select,
                     double _frequency, unit_info_uid _parent_uid)
       : unit_info_spi_dev_base{_name,      _label,      _chip_select,
                                _frequency, _parent_uid, "spi-dev"} {}
+};
+
+class unit_info_axi_spi_parser
+    : public units_info_base_parser<units_info_list, unit_info_axi_spi> {
+  void parser(const std::string_view &config) override {
+    // TODO: add configuration parser
+    _info_list.emplace_back("SPI", "PORT0", 0x00010000);
+    _info_list.emplace_back("SPI", "PORT1", 0x00020000);
+    _info_list.emplace_back("SPI", "PORT2", 0x00030000);
+  }
+
+ public:
+  unit_info_axi_spi_parser() = default;
+  unit_info_axi_spi_parser(const std::string_view &config) { parser(config); }
 };
 
 class unit_info_spi_dev_parser
@@ -63,8 +63,8 @@ class unit_info_spi_dev_parser
   unit_info_spi_dev_parser(const std::string_view &config) { parser(config); }
 };
 
-class unit_info_spi_parser : public unit_info_axi_spi_parser,
-                             public unit_info_spi_dev_parser {
+class unit_info_spi_parser final : public unit_info_axi_spi_parser,
+                                   public unit_info_spi_dev_parser {
  public:
   using axi_parser = unit_info_axi_spi_parser;
   using dev_parser = unit_info_spi_dev_parser;
@@ -90,7 +90,7 @@ class unit_info_spi_parser : public unit_info_axi_spi_parser,
   }
 
  private:
-  void parser(const std::string_view &config) override {
+  void parser(const std::string_view &config) final {
     // TODO: add configuration parser
     axi_parser::_info_list.emplace_back("SPI", "PORT0", 0x00010000);
     axi_parser::_info_list.emplace_back("SPI", "PORT1", 0x00020000);

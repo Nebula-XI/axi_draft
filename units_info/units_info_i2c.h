@@ -4,7 +4,7 @@
 
 namespace InSys {
 
-struct unit_info_axi_i2c : unit_info_axi_base {
+struct unit_info_axi_i2c final : unit_info_axi_base {
   using list = units_info_list<unit_info_axi_i2c>;
   unit_info_axi_i2c(const std::string_view &_name,
                     const std::string_view &_label, unit_info_uid _axi_offset)
@@ -23,7 +23,7 @@ struct unit_info_i2c_dev_base : unit_info_base {
   const double frequency{};
 };
 
-struct unit_info_i2c_dev : unit_info_i2c_dev_base {
+struct unit_info_i2c_dev final : unit_info_i2c_dev_base {
   using list = units_info_list<unit_info_i2c_dev>;
   unit_info_i2c_dev(const std::string_view &_name,
                     const std::string_view &_label, uint32_t _address,
@@ -32,7 +32,7 @@ struct unit_info_i2c_dev : unit_info_i2c_dev_base {
                                _frequency, _parent_uid, "i2c-dev"} {}
 };
 
-struct unit_info_i2c_mux : unit_info_i2c_dev_base {
+struct unit_info_i2c_mux final : unit_info_i2c_dev_base {
   using list = units_info_list<unit_info_i2c_mux>;
   using segments_map = std::map<unit_info_uid, uint32_t, std::less<uint32_t>>;
   unit_info_i2c_mux(const std::string_view &_name,
@@ -98,9 +98,9 @@ class unit_info_i2c_dev_parser
   unit_info_i2c_dev_parser(const std::string_view &config) { parser(config); }
 };
 
-class unit_info_i2c_parser : public unit_info_axi_i2c_parser,
-                             public unit_info_i2c_dev_parser,
-                             public unit_info_i2c_mux_parser {
+class unit_info_i2c_parser final : public unit_info_axi_i2c_parser,
+                                   public unit_info_i2c_dev_parser,
+                                   public unit_info_i2c_mux_parser {
  public:
   using axi_parser = unit_info_axi_i2c_parser;
   using dev_parser = unit_info_i2c_dev_parser;
@@ -127,7 +127,7 @@ class unit_info_i2c_parser : public unit_info_axi_i2c_parser,
   }
 
  private:
-  void parser(const std::string_view &config) override {
+  void parser(const std::string_view &config) final {
     // TODO: add configuration parser
     axi_parser::_info_list.emplace_back("I2C", "PORT0", 0x00001000);
     axi_parser::_info_list.emplace_back("I2C", "PORT1", 0x00002000);

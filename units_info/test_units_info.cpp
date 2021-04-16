@@ -2,10 +2,6 @@
 #include <iostream>
 
 #include "units_info.h"
-#include "units_info_gpio.h"
-#include "units_info_i2c.h"
-#include "units_info_sdram.h"
-#include "units_info_spi.h"
 
 using namespace InSys;
 using namespace std::string_literals;
@@ -202,7 +198,6 @@ int main(int argc, char *argv[]) try {
   print_info_list<unit_info_axi_gpio_parser::list_type>(
       "EXAMPLE [22] - get info axi-gpio units from common parser",
       unit_info_axi_gpio_list);
-
   unit_info_axi_sdram_parser unit_info_axi_sdram_parser{g_config};
   auto unit_info_axi_sdram_list = unit_info_axi_sdram_parser.get_info();
   print_info_list<unit_info_axi_sdram_parser::list_type>(

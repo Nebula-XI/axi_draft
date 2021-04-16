@@ -11,7 +11,7 @@
 namespace InSys {
 
 using unit_info_uid = std::size_t;
-class make_unit_info_uid {
+class make_unit_info_uid final {
   std::string _str{};
   unit_info_uid operator()() { return std::hash<std::string>{}(_str); }
 

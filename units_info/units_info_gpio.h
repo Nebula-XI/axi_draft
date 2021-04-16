@@ -4,7 +4,7 @@
 
 namespace InSys {
 
-struct unit_info_axi_gpio : unit_info_axi_base {
+struct unit_info_axi_gpio final : unit_info_axi_base {
   using list = units_info_list<unit_info_axi_gpio>;
   unit_info_axi_gpio(const std::string_view &_name,
                      const std::string_view &_label, unit_info_uid _axi_offset)
@@ -25,7 +25,7 @@ class unit_info_axi_gpio_parser
   unit_info_axi_gpio_parser(const std::string_view &config) { parser(config); }
 };
 
-class unit_info_gpio_parser : public unit_info_axi_gpio_parser {
+class unit_info_gpio_parser final : public unit_info_axi_gpio_parser {
  public:
   using axi_parser = unit_info_axi_gpio_parser;
 
@@ -50,7 +50,7 @@ class unit_info_gpio_parser : public unit_info_axi_gpio_parser {
   }
 
  private:
-  void parser(const std::string_view &config) override {
+  void parser(const std::string_view &config) final {
     // TODO: add configuration parser
     axi_parser::_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
     axi_parser::_info_list.emplace_back("GPIO", "PORT1", 0x00060000);
