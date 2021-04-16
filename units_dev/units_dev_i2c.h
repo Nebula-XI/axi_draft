@@ -39,7 +39,9 @@ class unit_dev_i2c_mux : public unit_dev_axi_i2c_interface,
       : unit_dev_base{_info}, segment{_segment}, i2c{_i2c} {}
 
  private:
-  void select_segment() {}
+  void select_segment() {
+    std::puts("select_segment");
+  }
   std::size_t read() final {
     select_segment();
     return i2c.read();
