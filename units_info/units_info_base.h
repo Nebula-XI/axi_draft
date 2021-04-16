@@ -34,10 +34,10 @@ struct unit_info_base {
         unit{_unit} {}
   virtual ~unit_info_base() noexcept = default;
   const unit_info_uid uid{};
-  const std::string_view name{};
-  const std::string_view label{};
+  const std::string name{};
+  const std::string label{};
   const unit_info_uid parent_uid{};
-  const std::string_view unit{};
+  const std::string unit{};
 };
 
 struct unit_info_axi_base : unit_info_base {
