@@ -348,3 +348,179 @@ uid: 0xa7084de60742fa7d
 parent uid: 0xc3352acec12fddbf
 address: 0x44
 frequency: 200000
+----------------------------------------
+EXAMPLE [17] - get info axi-spi units from custom parser
+----------------------------------------
+name: SPI
+label: PORT0
+unit: axi-spi
+uid: 0x270fe17b0a744403
+parent uid: 0x0
+offset: 0x10000
+----------------------------------------
+name: SPI
+label: PORT1
+unit: axi-spi
+uid: 0xd08b1ebabda61e46
+parent uid: 0x0
+offset: 0x20000
+----------------------------------------
+name: SPI
+label: PORT2
+unit: axi-spi
+uid: 0xc50061e1d4423e88
+parent uid: 0x0
+offset: 0x30000
+----------------------------------------
+EXAMPLE [18] - get info api-dev units from custom parser
+----------------------------------------
+name: LMX2594
+label: DD1
+unit: spi-dev
+uid: 0xbb4fd479ec780716
+parent uid: 0x270fe17b0a744403
+chip_select: 0
+frequency: 1e+07
+----------------------------------------
+name: LTC6953
+label: DD2
+unit: spi-dev
+uid: 0x43c1e7229244c14e
+parent uid: 0xd08b1ebabda61e46
+chip_select: 1
+frequency: 3e+07
+----------------------------------------
+name: LMX2594
+label: DD3
+unit: spi-dev
+uid: 0x8cd84cd474962024
+parent uid: 0xc50061e1d4423e88
+chip_select: 2
+frequency: 1e+07
+----------------------------------------
+EXAMPLE [19] - get info axi-spi units from common parser
+----------------------------------------
+name: SPI
+label: PORT0
+unit: axi-spi
+uid: 0x270fe17b0a744403
+parent uid: 0x0
+offset: 0x10000
+----------------------------------------
+name: SPI
+label: PORT1
+unit: axi-spi
+uid: 0xd08b1ebabda61e46
+parent uid: 0x0
+offset: 0x20000
+----------------------------------------
+name: SPI
+label: PORT2
+unit: axi-spi
+uid: 0xc50061e1d4423e88
+parent uid: 0x0
+offset: 0x30000
+----------------------------------------
+EXAMPLE [20] - get info spi-dev units from common parser
+----------------------------------------
+name: LMX2594
+label: DD1
+unit: spi-dev
+uid: 0xbb4fd479ec780716
+parent uid: 0x270fe17b0a744403
+chip_select: 0
+frequency: 1e+07
+----------------------------------------
+name: LTC6953
+label: DD2
+unit: spi-dev
+uid: 0x43c1e7229244c14e
+parent uid: 0xd08b1ebabda61e46
+chip_select: 1
+frequency: 3e+07
+----------------------------------------
+name: LMX2594
+label: DD3
+unit: spi-dev
+uid: 0x8cd84cd474962024
+parent uid: 0xc50061e1d4423e88
+chip_select: 1
+frequency: 1e+07
+----------------------------------------
+EXAMPLE [21] - get info axi-gpio units from custom parser
+----------------------------------------
+name: GPIO
+label: PORT0
+unit: axi-gpio
+uid: 0xdd381d965d3879fa
+parent uid: 0x0
+offset: 0x50000
+----------------------------------------
+name: GPIO
+label: PORT1
+unit: axi-gpio
+uid: 0x28b65ada16bb92a2
+parent uid: 0x0
+offset: 0x60000
+----------------------------------------
+name: GPIO
+label: PORT2
+unit: axi-gpio
+uid: 0x90c4d32039d5ff8a
+parent uid: 0x0
+offset: 0x70000
+----------------------------------------
+EXAMPLE [22] - get info axi-gpio units from common parser
+----------------------------------------
+name: GPIO
+label: PORT0
+unit: axi-gpio
+uid: 0xdd381d965d3879fa
+parent uid: 0x0
+offset: 0x50000
+----------------------------------------
+name: GPIO
+label: PORT1
+unit: axi-gpio
+uid: 0x28b65ada16bb92a2
+parent uid: 0x0
+offset: 0x60000
+----------------------------------------
+name: GPIO
+label: PORT2
+unit: axi-gpio
+uid: 0x90c4d32039d5ff8a
+parent uid: 0x0
+offset: 0x70000
+----------------------------------------
+EXAMPLE [23] - get info axi-sdram units from custom parser
+----------------------------------------
+name: SDRAM
+label: DDR0
+unit: axi-sdram
+uid: 0x984209ff7fc2963a
+parent uid: 0x0
+offset: 0x80000
+----------------------------------------
+name: SDRAM
+label: DDR1
+unit: axi-sdram
+uid: 0x77dc81e363bd57c3
+parent uid: 0x0
+offset: 0x90000
+----------------------------------------
+EXAMPLE [24] - get info axi-sdram units from common parser
+----------------------------------------
+name: SDRAM
+label: DDR0
+unit: axi-sdram
+uid: 0x984209ff7fc2963a
+parent uid: 0x0
+offset: 0x80000
+----------------------------------------
+name: SDRAM
+label: DDR1
+unit: axi-sdram
+uid: 0x77dc81e363bd57c3
+parent uid: 0x0
+offset: 0x90000

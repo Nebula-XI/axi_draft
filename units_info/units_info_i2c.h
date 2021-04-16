@@ -102,9 +102,9 @@ class unit_info_i2c_parser : public unit_info_axi_i2c_parser,
                              public unit_info_i2c_dev_parser,
                              public unit_info_i2c_mux_parser {
  public:
-  using axi_i2c_parser = unit_info_axi_i2c_parser;
-  using i2c_dev_parser = unit_info_i2c_dev_parser;
-  using i2c_mux_parser = unit_info_i2c_mux_parser;
+  using axi_parser = unit_info_axi_i2c_parser;
+  using dev_parser = unit_info_i2c_dev_parser;
+  using mux_parser = unit_info_i2c_mux_parser;
 
   unit_info_i2c_parser(const std::string_view &config) { parser(config); }
   template <typename parser>
@@ -129,22 +129,21 @@ class unit_info_i2c_parser : public unit_info_axi_i2c_parser,
  private:
   void parser(const std::string_view &config) override {
     // TODO: add configuration parser
-    axi_i2c_parser::_info_list.emplace_back("I2C", "PORT0", 0x00001000);
-    axi_i2c_parser::_info_list.emplace_back("I2C", "PORT1", 0x00002000);
-    axi_i2c_parser::_info_list.emplace_back("I2C", "PORT2", 0x00003000);
-    i2c_mux_parser::_info_list.emplace_back(
-        "LTC4356", "DD12", 0x44, 200_kHz, 8,
-        make_unit_info_uid{}("I2C", "PORT0"));
-    i2c_mux_parser::_info_list.emplace_back(
+    axi_parser::_info_list.emplace_back("I2C", "PORT0", 0x00001000);
+    axi_parser::_info_list.emplace_back("I2C", "PORT1", 0x00002000);
+    axi_parser::_info_list.emplace_back("I2C", "PORT2", 0x00003000);
+    mux_parser::_info_list.emplace_back("LTC4356", "DD12", 0x44, 200_kHz, 8,
+                                        make_unit_info_uid{}("I2C", "PORT0"));
+    mux_parser::_info_list.emplace_back(
         "LTC4306", "DD45", 0x44, 200_kHz, 8,
         make_unit_info_uid{}("LTC4356", "DD12"));
-    i2c_dev_parser::_info_list.emplace_back(
-        "INA218", "DD1", 0x44, 200_kHz, make_unit_info_uid{}("I2C", "PORT0"));
-    i2c_dev_parser::_info_list.emplace_back(
-        "LTC2991", "DD2", 0x45, 200_kHz, make_unit_info_uid{}("I2C", "PORT1"));
-    i2c_dev_parser::_info_list.emplace_back(
-        "INA218", "DD3", 0x49, 200_kHz, make_unit_info_uid{}("I2C", "PORT2"));
-    i2c_dev_parser::_info_list.emplace_back(
+    dev_parser::_info_list.emplace_back("INA218", "DD1", 0x44, 200_kHz,
+                                        make_unit_info_uid{}("I2C", "PORT0"));
+    dev_parser::_info_list.emplace_back("LTC2991", "DD2", 0x45, 200_kHz,
+                                        make_unit_info_uid{}("I2C", "PORT1"));
+    dev_parser::_info_list.emplace_back("INA218", "DD3", 0x49, 200_kHz,
+                                        make_unit_info_uid{}("I2C", "PORT2"));
+    dev_parser::_info_list.emplace_back(
         "INA218", "DD8", 0x49, 200_kHz,
         make_unit_info_uid{}("LTC4356", "DD12", std::to_string(3)));
   }
