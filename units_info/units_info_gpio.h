@@ -5,7 +5,7 @@
 namespace InSys {
 
 struct unit_info_axi_gpio final : unit_info_axi_base {
-  using list = units_info_list<unit_info_axi_gpio>;
+  using list_type = units_info_list<unit_info_axi_gpio>;
   unit_info_axi_gpio(const std::string_view &_name,
                      const std::string_view &_label, unit_info_uid _axi_offset)
       : unit_info_axi_base{_name, _label, _axi_offset, "axi-gpio"} {}

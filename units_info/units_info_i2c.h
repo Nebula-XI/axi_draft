@@ -5,7 +5,7 @@
 namespace InSys {
 
 struct unit_info_axi_i2c final : unit_info_axi_base {
-  using list = units_info_list<unit_info_axi_i2c>;
+  using list_type = units_info_list<unit_info_axi_i2c>;
   unit_info_axi_i2c(const std::string_view &_name,
                     const std::string_view &_label, unit_info_uid _axi_offset)
       : unit_info_axi_base{_name, _label, _axi_offset, "axi-i2c"} {}
@@ -24,7 +24,7 @@ struct unit_info_i2c_dev_base : unit_info_base {
 };
 
 struct unit_info_i2c_dev final : unit_info_i2c_dev_base {
-  using list = units_info_list<unit_info_i2c_dev>;
+  using list_type = units_info_list<unit_info_i2c_dev>;
   unit_info_i2c_dev(const std::string_view &_name,
                     const std::string_view &_label, uint32_t _address,
                     double _frequency, unit_info_uid _parent_uid)
@@ -33,7 +33,7 @@ struct unit_info_i2c_dev final : unit_info_i2c_dev_base {
 };
 
 struct unit_info_i2c_mux final : unit_info_i2c_dev_base {
-  using list = units_info_list<unit_info_i2c_mux>;
+  using list_type = units_info_list<unit_info_i2c_mux>;
   using segments_map = std::map<unit_info_uid, uint32_t, std::less<uint32_t>>;
   unit_info_i2c_mux(const std::string_view &_name,
                     const std::string_view &_label, uint32_t _address,

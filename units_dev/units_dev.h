@@ -1,15 +1,6 @@
 #pragma once
 
-#include <any>
-#include <string>
-#include <vector>
-
-//#include "units_info_base.h"
-
-namespace InSys {
-
-using units_info_any = std::any;
-using units_info_any_list = std::vector<std::any>;
-
-
-}  // namespace InSys
+#include "units_dev_gpio.h"
+#include "units_dev_i2c.h"
+#include "units_dev_sdram.h"
+#include "units_dev_spi.h"

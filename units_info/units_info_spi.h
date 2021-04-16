@@ -5,7 +5,7 @@
 namespace InSys {
 
 struct unit_info_axi_spi final : unit_info_axi_base {
-  using list = units_info_list<unit_info_axi_i2c>;
+  using list_type = units_info_list<unit_info_axi_i2c>;
   unit_info_axi_spi(const std::string_view &_name,
                     const std::string_view &_label, unit_info_uid _axi_offset)
       : unit_info_axi_base{_name, _label, _axi_offset, "axi-spi"} {}
@@ -24,7 +24,7 @@ struct unit_info_spi_dev_base : unit_info_base {
 };
 
 struct unit_info_spi_dev final : unit_info_spi_dev_base {
-  using list = units_info_list<unit_info_spi_dev>;
+  using list_type = units_info_list<unit_info_spi_dev>;
   unit_info_spi_dev(const std::string_view &_name,
                     const std::string_view &_label, uint32_t _chip_select,
                     double _frequency, unit_info_uid _parent_uid)
