@@ -7,12 +7,6 @@ namespace InSys {
 template <typename unit_dev_type>
 using units_dev_list = std::vector<unit_dev_type>;
 
-struct unit_dev_base_interface {
-  virtual std::size_t read() = 0;
-  virtual std::size_t write() = 0;
-  ~unit_dev_base_interface() noexcept = default;
-};
-
 template <typename unit_info_type>
 class unit_dev_base {
  public:
