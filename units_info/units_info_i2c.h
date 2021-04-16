@@ -116,6 +116,11 @@ class unit_info_i2c_parser : public unit_info_axi_i2c_parser,
     return parser::find_by_name(name);
   }
   template <typename parser>
+  std::optional<typename parser::value_type> get_by_label(
+      const std::string_view &label) const {
+    return parser::get_by_label(label);
+  }
+  template <typename parser>
   std::optional<typename parser::value_type> get_by_uid(
       unit_info_uid uid) const {
     return parser::get_by_uid(uid);

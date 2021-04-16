@@ -1,4 +1,4 @@
-\[olek@2122-08 build]$ ./test_units_info
+[olek@2122-08 build]$ ./test_units_info
 ----------------------------------------
 EXAMPLE [1] - get info  axi-i2c units from custom parser
 ----------------------------------------
@@ -330,6 +330,16 @@ segment uid[6]: 0xa068eae81bb8dd2
 segment uid[7]: 0x4b127b6cc4546b53
 ----------------------------------------
 EXAMPLE [15] - get info by uid for i2c-dev units from common parser
+----------------------------------------
+name: INA218
+label: DD1
+unit: i2c-dev
+uid: 0xa7084de60742fa7d
+parent uid: 0xc3352acec12fddbf
+address: 0x44
+frequency: 200000
+----------------------------------------
+EXAMPLE [16] - get info by label for i2c-dev units from common parser
 ----------------------------------------
 name: INA218
 label: DD1

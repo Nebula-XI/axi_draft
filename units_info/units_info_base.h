@@ -69,6 +69,15 @@ class units_info_base_parser {
     }
     return info_list;
   }
+  std::optional<value_type> get_by_label(const std::string_view &label) const {
+    std::optional<value_type> result{};
+    for (const auto &info : _info_list) {
+      if (info.label == label) {
+        result.emplace(info);
+      }
+    }
+    return result;
+  }
   std::optional<value_type> get_by_uid(unit_info_uid uid) const {
     std::optional<value_type> result{};
     for (const auto &info : _info_list) {

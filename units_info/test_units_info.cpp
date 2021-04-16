@@ -158,6 +158,12 @@ int main(int argc, char *argv[]) try {
   print_info(
       "EXAMPLE [15] - get info by uid for i2c-dev units from common parser",
       unit_info_i2c_dev);
+  auto unit_info_i2c_dev_by_label =
+      unit_info_i2c_parser.get_by_label<unit_info_i2c_parser::i2c_dev_parser>(
+          "DD1");
+  print_info(
+      "EXAMPLE [16] - get info by label for i2c-dev units from common parser",
+      unit_info_i2c_dev_by_label);
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
   std::cerr << e.what() << std::endl;
