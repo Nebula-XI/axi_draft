@@ -111,6 +111,9 @@ class unit_info_i2c_dev_parser
     m_info_list.emplace_back(
         "INA218", "DD8", 0x49, 200_kHz,
         make_unit_info_uid{}("LTC4356", "DD12", std::to_string(3)));
+    m_info_list.emplace_back(
+        "INA218", "DD79", 0x49, 200_kHz,
+        make_unit_info_uid{}("LTC4356", "DD12", std::to_string(1)));
   }
 
  public:
@@ -166,6 +169,9 @@ class unit_info_i2c_parser final : public unit_info_axi_i2c_parser,
     dev_parser::m_info_list.emplace_back(
         "INA218", "DD8", 0x49, 200_kHz,
         make_unit_info_uid{}("LTC4356", "DD12", std::to_string(3)));
+    dev_parser::m_info_list.emplace_back(
+        "INA218", "DD79", 0x49, 200_kHz,
+        make_unit_info_uid{}("LTC4356", "DD12", std::to_string(1)));
   }
 };
 

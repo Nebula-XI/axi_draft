@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "units_info_base.h"
 
 namespace InSys {
@@ -14,17 +16,18 @@ template <typename unit_dev_type>
 using units_dev_list = std::vector<unit_dev_type>;
 
 template <typename unit_info_type>
-class unit_dev_base {
+class unit_dev_base : public unit_dev_base_interface {
  public:
   using info_type = unit_info_type;
-  unit_dev_base() = delete;
-  unit_dev_base(const unit_dev_base &other) = default;
-  unit_dev_base(unit_dev_base &&) noexcept = default;
-  unit_dev_base &operator=(const unit_dev_base &) = default;
-  unit_dev_base &operator=(unit_dev_base &&) noexcept = default;
+  unit_dev_base() = default;
   virtual ~unit_dev_base() noexcept = default;
-  unit_dev_base(const info_type &info) : m_info{info} {}
+  template <typename Type = info_type>
+  unit_dev_base(Type &&info, unit_dev_base_interface *io)
+      : m_info{std::forward<Type>(info)}, m_io{io} {}
   auto &get_info() const noexcept { return m_info; }
+
+ protected:
+  unit_dev_base_interface *m_io{};
 
  private:
   info_type m_info{};
