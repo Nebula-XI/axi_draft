@@ -12,13 +12,16 @@ class unit_dev_base {
  public:
   using info_type = unit_info_type;
   unit_dev_base() = delete;
-  ~unit_dev_base() noexcept = default;
-  unit_dev_base(const info_type &_info) : info{_info} {}
-
-  info_type get_info() const { return info; }
+  unit_dev_base(const unit_dev_base &other) = default;
+  unit_dev_base(unit_dev_base &&) noexcept = default;
+  unit_dev_base &operator=(const unit_dev_base &) = default;
+  unit_dev_base &operator=(unit_dev_base &&) noexcept = default;
+  virtual ~unit_dev_base() noexcept = default;
+  unit_dev_base(const info_type &info) : m_info{info} {}
+  auto &get_info() const noexcept { return m_info; }
 
  private:
-  info_type info{};
+  info_type m_info{};
 };
 
 }  // namespace InSys

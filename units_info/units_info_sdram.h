@@ -4,28 +4,34 @@
 
 namespace InSys {
 
-struct unit_info_axi_sdram final : unit_info_axi_base {
+class unit_info_axi_sdram final : public unit_info_axi_base {
+  inline static constexpr auto k_unit{"axi-sdram"};
+
+ public:
   using list_type = units_info_list<unit_info_axi_sdram>;
-  unit_info_axi_sdram(const std::string_view &_name,
-                      const std::string_view &_label, unit_info_uid _axi_offset)
-      : unit_info_axi_base{_name, _label, _axi_offset, "axi-sdram"} {}
+  unit_info_axi_sdram() : unit_info_axi_base{k_unit} {}
+  unit_info_axi_sdram(const std::string_view &name,
+                      const std::string_view &label, unit_info_uid axi_offset)
+      : unit_info_axi_base{name, label, axi_offset, k_unit} {}
 };
 
-struct unit_info_sdram_dev_base : unit_info_base {
-  unit_info_sdram_dev_base(const std::string_view &_name,
-                           const std::string_view &_label,
-                           unit_info_uid _parent_uid,
-                           const std::string_view &_unit)
-      : unit_info_base{_name, _label, _parent_uid, _unit} {}
-  // TODO: sdd new parameters
+class unit_info_sdram_dev_base : public unit_info_base {
+  unit_info_sdram_dev_base(const std::string_view &unit)
+      : unit_info_base{unit} {}
+  unit_info_sdram_dev_base(const std::string_view &name,
+                           const std::string_view &label,
+                           unit_info_uid parent_uid,
+                           const std::string_view &unit)
+      : unit_info_base{name, label, parent_uid, unit} {}
+  // TODO: add new parameters
 };
 
 class unit_info_axi_sdram_parser
     : public units_info_base_parser<units_info_list, unit_info_axi_sdram> {
   void parser(const std::string_view &config) override {
     // TODO: add configuration parser
-    _info_list.emplace_back("SDRAM", "DDR0", 0x00080000);
-    _info_list.emplace_back("SDRAM", "DDR1", 0x00090000);
+    m_info_list.emplace_back("SDRAM", "DDR0", 0x00080000);
+    m_info_list.emplace_back("SDRAM", "DDR1", 0x00090000);
   }
 
  public:
@@ -60,8 +66,8 @@ class unit_info_sdram_parser final : public unit_info_axi_sdram_parser {
  private:
   void parser(const std::string_view &config) final {
     // TODO: add configuration parser
-    axi_parser::_info_list.emplace_back("SDRAM", "DDR0", 0x00080000);
-    axi_parser::_info_list.emplace_back("SDRAM", "DDR1", 0x00090000);
+    axi_parser::m_info_list.emplace_back("SDRAM", "DDR0", 0x00080000);
+    axi_parser::m_info_list.emplace_back("SDRAM", "DDR1", 0x00090000);
   }
 };
 

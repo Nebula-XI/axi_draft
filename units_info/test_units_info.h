@@ -16,28 +16,28 @@ void print_info_not_found() { std::cout << "unit info is not found" << '\n'; }
 void print_info_list_empty() { std::cout << "unit info list is empty" << '\n'; }
 
 void print_info(const unit_info_base &info) {
-  std::cout << "name: " << info.name << '\n';
-  std::cout << "label: " << info.label << '\n';
-  std::cout << "unit: " << info.unit << '\n';
-  std::cout << "uid: 0x" << std::hex << info.uid << '\n';
-  std::cout << "parent uid: 0x" << std::hex << info.parent_uid << '\n';
+  std::cout << "name: " << info.name() << '\n';
+  std::cout << "label: " << info.label() << '\n';
+  std::cout << "unit: " << info.unit() << '\n';
+  std::cout << "uid: 0x" << std::hex << info.uid() << '\n';
+  std::cout << "parent uid: 0x" << std::hex << info.parent_uid() << '\n';
 }
 
 void print_info(const unit_info_axi_base &info) {
   print_info(static_cast<unit_info_base>(info));
-  std::cout << "offset: 0x" << std::hex << info.axi_offset << '\n';
+  std::cout << "offset: 0x" << std::hex << info.axi_offset() << '\n';
 }
 
 void print_info(const unit_info_i2c_dev &info) {
   print_info(static_cast<unit_info_base>(info));
-  std::cout << "address: 0x" << std::hex << info.address << '\n';
-  std::cout << "frequency: " << std::dec << info.frequency << '\n';
+  std::cout << "address: 0x" << std::hex << info.address() << '\n';
+  std::cout << "frequency: " << std::dec << info.frequency() << '\n';
 }
 
 void print_info(const unit_info_i2c_mux &info) {
   print_info(static_cast<unit_info_i2c_dev_base>(info));
   std::map<uint32_t, unit_info_uid> segments{};
-  for (const auto &[uid, port] : info.segments) {
+  for (const auto &[uid, port] : info.segments()) {
     segments.emplace(port, uid);
   }
   for (const auto &[port, uid] : segments) {
@@ -48,8 +48,8 @@ void print_info(const unit_info_i2c_mux &info) {
 
 void print_info(const unit_info_spi_dev &info) {
   print_info(static_cast<unit_info_base>(info));
-  std::cout << "chip_select: " << std::dec << info.chip_select << '\n';
-  std::cout << "frequency: " << std::dec << info.frequency << '\n';
+  std::cout << "chip_select: " << std::dec << info.chip_select() << '\n';
+  std::cout << "frequency: " << std::dec << info.frequency() << '\n';
 }
 
 template <typename unit_info_list_type>
@@ -73,10 +73,10 @@ void print_info(std::string_view &&desc,
   print_line();
   std::cout << desc << "\n";
   print_line();
-  if (!info.has_value()) {
+  if (!info) {
     print_info_not_found();
   } else
-    print_info(info.value());
+    print_info(*info);
 }
 
 }  // namespace InSys

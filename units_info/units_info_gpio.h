@@ -4,20 +4,22 @@
 
 namespace InSys {
 
-struct unit_info_axi_gpio final : unit_info_axi_base {
+class unit_info_axi_gpio final : public unit_info_axi_base {
+ public:
   using list_type = units_info_list<unit_info_axi_gpio>;
-  unit_info_axi_gpio(const std::string_view &_name,
-                     const std::string_view &_label, unit_info_uid _axi_offset)
-      : unit_info_axi_base{_name, _label, _axi_offset, "axi-gpio"} {}
+  unit_info_axi_gpio() : unit_info_axi_base{"axi-gpio"} {}
+  unit_info_axi_gpio(const std::string_view &name,
+                     const std::string_view &label, unit_info_uid axi_offset)
+      : unit_info_axi_base{name, label, axi_offset, "axi-gpio"} {}
 };
 
 class unit_info_axi_gpio_parser
     : public units_info_base_parser<units_info_list, unit_info_axi_gpio> {
   void parser(const std::string_view &config) override {
     // TODO: add configuration parser
-    _info_list.emplace_back("GPIO", "PORT0", 0x00050000);
-    _info_list.emplace_back("GPIO", "PORT1", 0x00060000);
-    _info_list.emplace_back("GPIO", "PORT2", 0x00070000);
+    m_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
+    m_info_list.emplace_back("GPIO", "PORT1", 0x00060000);
+    m_info_list.emplace_back("GPIO", "PORT2", 0x00070000);
   }
 
  public:
@@ -28,7 +30,6 @@ class unit_info_axi_gpio_parser
 class unit_info_gpio_parser final : public unit_info_axi_gpio_parser {
  public:
   using axi_parser = unit_info_axi_gpio_parser;
-
   unit_info_gpio_parser(const std::string_view &config) { parser(config); }
   template <typename parser>
   typename parser::list_type get_info() const {
@@ -52,9 +53,9 @@ class unit_info_gpio_parser final : public unit_info_axi_gpio_parser {
  private:
   void parser(const std::string_view &config) final {
     // TODO: add configuration parser
-    axi_parser::_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
-    axi_parser::_info_list.emplace_back("GPIO", "PORT1", 0x00060000);
-    axi_parser::_info_list.emplace_back("GPIO", "PORT2", 0x00070000);
+    axi_parser::m_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
+    axi_parser::m_info_list.emplace_back("GPIO", "PORT1", 0x00060000);
+    axi_parser::m_info_list.emplace_back("GPIO", "PORT2", 0x00070000);
   }
 };
 
