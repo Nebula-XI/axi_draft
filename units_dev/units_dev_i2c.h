@@ -5,11 +5,8 @@
 
 namespace InSys {
 
-struct unit_dev_axi_i2c_interface {
-  virtual std::size_t read() = 0;
-  virtual std::size_t write() = 0;
-  virtual ~unit_dev_axi_i2c_interface() noexcept = default;
-};
+struct unit_dev_axi_i2c_interface : unit_dev_base_interface {};
+
 class unit_dev_axi_i2c final : public unit_dev_axi_i2c_interface,
                                public unit_dev_base<unit_info_axi_i2c> {
  public:
