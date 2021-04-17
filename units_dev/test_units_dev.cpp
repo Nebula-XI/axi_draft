@@ -31,13 +31,13 @@ int main(int argc, char *argv[]) try {
         info_i2c_parser.get_by_uid<unit_info_i2c_parser::axi_parser>(
             (is_info_i2c_mux) ? info_i2c_mux.parent_uid()
                               : info_i2c_dev.parent_uid());
+    auto dev_i2c = make_unit_dev<unit_dev_i2c>();
     if (!info_axi_i2c_opt) {
       print_info_not_found();
-      return;
+      return dev_i2c;
     }
     info_axi_i2c = *info_axi_i2c_opt;
     auto dev_axi_i2c = make_unit_dev<unit_dev_axi_i2c>(std::move(info_axi_i2c));
-    auto dev_i2c = make_unit_dev<unit_dev_i2c>();
     if (is_info_i2c_mux) {
       dev_i2c = make_unit_dev<unit_dev_i2c>(
           std::move(info_i2c_dev),
@@ -46,15 +46,16 @@ int main(int argc, char *argv[]) try {
       dev_i2c =
           make_unit_dev<unit_dev_i2c>(std::move(info_i2c_dev), dev_axi_i2c);
     }
-    print_line();
-    dev_i2c->read();
-    dev_i2c->write();
-    print_line();
+    return dev_i2c;
   };
   auto info_i2c_dev_list =
       info_i2c_parser.get_info<unit_info_i2c_parser::dev_parser>();
   for (auto &info_i2c_dev : info_i2c_dev_list) {
-    example_i2c(std::move(info_i2c_dev));
+    auto dev_i2c = example_i2c(std::move(info_i2c_dev));
+    print_line();
+    dev_i2c->read();
+    dev_i2c->write();
+    print_line();
   }
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
