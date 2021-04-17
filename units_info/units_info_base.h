@@ -17,8 +17,8 @@ class make_unit_info_uid final {
 
  public:
   template <typename Arg = std::string, typename... Args>
-  unit_info_uid operator()(Arg str, Args... other_str) {
-    m_str += str;
+  unit_info_uid operator()(Arg &&str, Args... other_str) {
+    m_str += std::forward<Arg>(str);
     return operator()(other_str...);
   }
 };

@@ -4,12 +4,11 @@
 #include "units_info_i2c.h"
 
 namespace InSys {
-
-class unit_dev_axi_i2c final : public unit_dev_base<unit_info_axi_i2c> {
+class unit_dev_axi_i2c final : public unit_dev_root_interface,
+                               public unit_dev_base<unit_info_axi_i2c> {
  public:
-  using list_type = units_dev_list<unit_dev_axi_i2c>;
   unit_dev_axi_i2c() = default;
-  unit_dev_axi_i2c(const info_type &info) : unit_dev_base{info, this} {
+  unit_dev_axi_i2c(const info_type &info) : unit_dev_base{info} {
     // TODO: установить axi offset
   }
 
@@ -26,15 +25,14 @@ class unit_dev_axi_i2c final : public unit_dev_base<unit_info_axi_i2c> {
   }
 };
 
-class unit_dev_i2c_mux : public unit_dev_base<unit_info_i2c_mux> {
+class unit_dev_i2c_mux final : public unit_dev_interface,
+                               public unit_dev_base<unit_info_i2c_mux> {
   uint32_t m_segment{};
 
  public:
-  using list_type = units_dev_list<unit_dev_i2c_mux>;
   unit_dev_i2c_mux() = default;
-  unit_dev_i2c_mux(const info_type &info, uint32_t segment,
-                   unit_dev_base_interface *io)
-      : unit_dev_base{info, io}, m_segment{segment} {}
+  unit_dev_i2c_mux(const info_type &info, uint32_t segment, interface_type io)
+      : unit_dev_interface{io}, unit_dev_base{info}, m_segment{segment} {}
 
  private:
   void select_segment() {
@@ -51,12 +49,12 @@ class unit_dev_i2c_mux : public unit_dev_base<unit_info_i2c_mux> {
   }
 };
 
-class unit_dev_i2c : public unit_dev_base<unit_info_i2c_dev> {
+class unit_dev_i2c final : public unit_dev_interface,
+                           public unit_dev_base<unit_info_i2c_dev> {
  public:
-  using list_type = units_dev_list<unit_dev_i2c>;
   unit_dev_i2c() = default;
-  unit_dev_i2c(const info_type &info, unit_dev_base_interface *io)
-      : unit_dev_base{info, io} {}
+  unit_dev_i2c(const info_type &info, interface_type io)
+      : unit_dev_interface{io}, unit_dev_base{info} {}
   std::size_t read() final {
     // TODO: выполнить необходимые действия
     std::puts("pre-read");

@@ -36,19 +36,19 @@ int main(int argc, char *argv[]) try {
       return;
     }
     info_axi_i2c = *info_axi_i2c_opt;
-    // FIXME: пока механизм не очень безопасный. в процессе разраб
-    unit_dev_axi_i2c dev_axi_i2c{std::move(info_axi_i2c)};
-    unit_dev_i2c dev_i2c{};
-    unit_dev_i2c_mux dev_i2c_mux{};
+    auto dev_axi_i2c = make_unit_dev<unit_dev_axi_i2c>(std::move(info_axi_i2c));
+    auto dev_i2c = make_unit_dev<unit_dev_i2c>();
     if (is_info_i2c_mux) {
-      dev_i2c_mux = unit_dev_i2c_mux{info_i2c_mux, segment, &dev_axi_i2c};
-      dev_i2c = unit_dev_i2c{std::move(info_i2c_dev), &dev_i2c_mux};
+      dev_i2c = make_unit_dev<unit_dev_i2c>(
+          std::move(info_i2c_dev),
+          make_unit_dev<unit_dev_i2c_mux>(info_i2c_mux, segment, dev_axi_i2c));
     } else {
-      dev_i2c = unit_dev_i2c{std::move(info_i2c_dev), &dev_axi_i2c};
+      dev_i2c =
+          make_unit_dev<unit_dev_i2c>(std::move(info_i2c_dev), dev_axi_i2c);
     }
     print_line();
-    dev_i2c.read();
-    dev_i2c.write();
+    dev_i2c->read();
+    dev_i2c->write();
     print_line();
   };
   auto info_i2c_dev_list =
