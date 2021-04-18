@@ -4,6 +4,7 @@
 #include "units_info_i2c.h"
 
 namespace InSys {
+
 class unit_dev_axi_i2c final : public unit_dev_root_interface,
                                public unit_dev_base<unit_info_axi_i2c> {
  public:
