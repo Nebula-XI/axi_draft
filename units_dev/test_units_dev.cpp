@@ -9,9 +9,8 @@ int main(int argc, char *argv[]) try {
   unit_info_i2c_parser info_i2c_parser{g_config};
   auto info_i2c_mux_list =
       info_i2c_parser.get_info<unit_info_i2c_parser::mux_parser>();
-  auto create_i2c_dev = [&](unit_info_i2c_dev &&info) {
+  auto create_i2c_dev = [&](unit_info_i2c_dev &&info_i2c_dev) {
     // FIXME: этот пример не ищет вложенность мультиплексоров
-    auto info_i2c_dev = std::move(info);
     print_line();
     print_info(info_i2c_dev);
     unit_info_i2c_mux info_i2c_mux{};
@@ -36,8 +35,8 @@ int main(int argc, char *argv[]) try {
       print_info_not_found();
       return dev_i2c;
     }
-    info_axi_i2c = *info_axi_i2c_opt;
-    auto dev_axi_i2c = make_unit_dev<unit_dev_axi_i2c>(std::move(info_axi_i2c));
+    auto dev_axi_i2c =
+        make_unit_dev<unit_dev_axi_i2c>(std::move(*info_axi_i2c_opt));
     if (is_info_i2c_mux) {
       dev_i2c = make_unit_dev<unit_dev_i2c>(
           std::move(info_i2c_dev),
