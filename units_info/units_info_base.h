@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstdint>
 #include <map>
 #include <optional>
 #include <string>
@@ -54,13 +55,13 @@ class unit_info_base {
 };
 
 class unit_info_axi_base : public unit_info_base {
-  unit_info_uid m_axi_offset{};
+  uint64_t m_axi_offset{};
 
  public:
   unit_info_axi_base(const std::string_view &unit)
       : unit_info_base{unit}, m_axi_offset{} {}
   unit_info_axi_base(const std::string_view &name,
-                     const std::string_view &label, unit_info_uid axi_offset,
+                     const std::string_view &label, uint64_t axi_offset,
                      const std::string_view &unit)
       : unit_info_base{name, label, {}, unit}, m_axi_offset{axi_offset} {}
   auto axi_offset() const noexcept { return m_axi_offset; }

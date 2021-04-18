@@ -9,7 +9,7 @@ class unit_info_axi_gpio final : public unit_info_axi_base {
   using list_type = units_info_list<unit_info_axi_gpio>;
   unit_info_axi_gpio() : unit_info_axi_base{"axi-gpio"} {}
   unit_info_axi_gpio(const std::string_view &name,
-                     const std::string_view &label, unit_info_uid axi_offset)
+                     const std::string_view &label, uint64_t axi_offset)
       : unit_info_axi_base{name, label, axi_offset, "axi-gpio"} {}
 };
 

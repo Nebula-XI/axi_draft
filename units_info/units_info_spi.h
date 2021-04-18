@@ -11,7 +11,7 @@ class unit_info_axi_spi final : public unit_info_axi_base {
   using list_type = units_info_list<unit_info_axi_i2c>;
   unit_info_axi_spi() : unit_info_axi_base{k_unit} {}
   unit_info_axi_spi(const std::string_view &name, const std::string_view &label,
-                    unit_info_uid axi_offset)
+                    uint64_t axi_offset)
       : unit_info_axi_base{name, label, axi_offset, k_unit} {}
 };
 
