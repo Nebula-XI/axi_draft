@@ -12,8 +12,6 @@ class unit_dev_axi_spi final : public unit_dev_root_interface,
   unit_dev_axi_spi(const info_type &info) : unit_dev_base{info} {
     // TODO: установить axi offset
   }
-
- private:
   std::size_t read() final {
     // TODO: добавить чтение
     std::puts("read");
@@ -26,18 +24,18 @@ class unit_dev_axi_spi final : public unit_dev_root_interface,
   }
 };
 
-class unit_dev_spi final : public unit_dev_interface,
-                           public unit_dev_base<unit_info_spi_dev> {
+class unit_dev_spi : public unit_dev_interface,
+                     public unit_dev_base<unit_info_spi_dev> {
  public:
   unit_dev_spi() = default;
   unit_dev_spi(const info_type &info, interface_type io)
       : unit_dev_interface{io}, unit_dev_base{info} {}
-  std::size_t read() final {
+  std::size_t read() override {
     // TODO: выполнить необходимые действия
     std::puts("pre-read");
     return m_io->read();
   }
-  std::size_t write() final {
+  std::size_t write() override {
     // TODO: выполнить необходимые действия
     std::puts("pre-write");
     return m_io->write();
