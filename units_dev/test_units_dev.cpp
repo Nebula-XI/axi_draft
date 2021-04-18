@@ -52,13 +52,13 @@ int main(int argc, char *argv[]) try {
       info_i2c_parser.get_info<unit_info_i2c_parser::dev_parser>();
   for (auto &info_i2c_dev : info_i2c_dev_list) {
     auto dev_i2c = create_i2c_dev(std::move(info_i2c_dev));
-    if((bool) dev_i2c) {
+    if (!dev_i2c) {
       continue;
-    } 
+    }
     print_line();
     dev_i2c->read();
     dev_i2c->write();
-    print_line()
+    print_line();
   }
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
