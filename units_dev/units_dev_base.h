@@ -14,15 +14,17 @@ struct unit_dev_root_interface {
 class unit_dev_interface : public unit_dev_root_interface {
  public:
   unit_dev_interface() = default;
-  unit_dev_interface(const interface_type &io) : m_io{io} {}
+  template <typename unit_dev_type = interface_type>
+  unit_dev_interface(unit_dev_type &&io)
+      : m_io{std::forward<unit_dev_type>(io)} {}
 
  protected:
   interface_type m_io{};
 };
 
 template <typename unit_dev_type, typename... Args>
-auto make_unit_dev(Args... args) {
-  return std::make_shared<unit_dev_type>(args...);
+auto make_unit_dev(Args &&...args) {
+  return std::make_shared<unit_dev_type>(std::forward<Args>(args)...);
 }
 
 }  // namespace InSys

@@ -25,28 +25,24 @@ int main(int argc, char *argv[]) try {
         break;
       }
     }
-    unit_info_axi_i2c info_axi_i2c{};
     auto info_axi_i2c_opt =
         info_i2c_parser.get_by_uid<unit_info_i2c_parser::axi_parser>(
             (is_info_i2c_mux) ? info_i2c_mux.parent_uid()
                               : info_i2c_dev.parent_uid());
-    auto dev_i2c = make_unit_dev<unit_dev_i2c>();
     if (!info_axi_i2c_opt) {
       print_info_not_found();
-      return dev_i2c;
+      return make_unit_dev<unit_dev_i2c>();
     }
     if (is_info_i2c_mux) {
-      dev_i2c = make_unit_dev<unit_dev_i2c>(make_unit_dev<unit_dev_i2c_mux>(
+      return make_unit_dev<unit_dev_i2c>(make_unit_dev<unit_dev_i2c_mux>(
           segment, make_unit_dev<unit_dev_axi_i2c>(
                        info_axi_i2c_opt->axi_offset(), info_i2c_mux.address(),
                        info_i2c_mux.frequency())));
     } else {
-      dev_i2c =
-          make_unit_dev<unit_dev_i2c>(make_unit_dev<unit_dev_axi_i2c>(
-                       info_axi_i2c_opt->axi_offset(), info_i2c_dev.address(),
-                       info_i2c_dev.frequency()));
+      return make_unit_dev<unit_dev_i2c>(make_unit_dev<unit_dev_axi_i2c>(
+          info_axi_i2c_opt->axi_offset(), info_i2c_dev.address(),
+          info_i2c_dev.frequency()));
     }
-    return dev_i2c;
   };
   auto info_i2c_dev_list =
       info_i2c_parser.get_info<unit_info_i2c_parser::dev_parser>();
