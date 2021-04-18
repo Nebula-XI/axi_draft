@@ -1,16 +1,19 @@
 #pragma once
 
 #include "units_dev_base.h"
-#include "units_info_i2c.h"
 
 namespace InSys {
 
-class unit_dev_axi_i2c final : public unit_dev_root_interface,
-                               public unit_dev_base<unit_info_axi_i2c> {
+class unit_dev_axi_i2c final : public unit_dev_root_interface {
+  uint64_t m_axi_offset{};
+  uint32_t m_address{};
+  double m_frequency{};
+
  public:
   unit_dev_axi_i2c() = default;
-  unit_dev_axi_i2c(const info_type &info) : unit_dev_base{info} {
-    // TODO: установить axi offset
+  unit_dev_axi_i2c(uint64_t axi_offset, uint32_t address, double frequency)
+      : m_axi_offset{axi_offset}, m_address{address}, m_frequency{frequency} {
+    // TODO:
   }
   std::size_t read() final {
     // TODO: добавить чтение
@@ -24,14 +27,13 @@ class unit_dev_axi_i2c final : public unit_dev_root_interface,
   }
 };
 
-class unit_dev_i2c_mux : public unit_dev_interface,
-                         public unit_dev_base<unit_info_i2c_mux> {
+class unit_dev_i2c_mux : public unit_dev_interface {
   uint32_t m_segment{};
 
  public:
   unit_dev_i2c_mux() = default;
-  unit_dev_i2c_mux(const info_type &info, uint32_t segment, interface_type io)
-      : unit_dev_interface{io}, unit_dev_base{info}, m_segment{segment} {}
+  unit_dev_i2c_mux(uint32_t segment, interface_type io)
+      : unit_dev_interface{io}, m_segment{segment} {}
   std::size_t read() override {
     select_segment();
     return m_io->read();
@@ -48,12 +50,10 @@ class unit_dev_i2c_mux : public unit_dev_interface,
   }
 };
 
-class unit_dev_i2c : public unit_dev_interface,
-                     public unit_dev_base<unit_info_i2c_dev> {
+class unit_dev_i2c : public unit_dev_interface {
  public:
   unit_dev_i2c() = default;
-  unit_dev_i2c(const info_type &info, interface_type io)
-      : unit_dev_interface{io}, unit_dev_base{info} {}
+  unit_dev_i2c(interface_type io) : unit_dev_interface{io} {}
   std::size_t read() override {
     // TODO: выполнить необходимые действия
     std::puts("pre-read");

@@ -1,15 +1,16 @@
 #pragma once
 
 #include "units_dev_base.h"
-#include "units_info_sdram.h"
 
 namespace InSys {
 
-class unit_dev_axi_sdram final : public unit_dev_base<unit_info_axi_sdram> {
+class unit_dev_axi_sdram final {
+  uint64_t m_axi_offset{};
+
  public:
   unit_dev_axi_sdram() = default;
-  unit_dev_axi_sdram(const info_type &info) : unit_dev_base{info} {
-    // TODO: установить axi offset
+  unit_dev_axi_sdram(uint64_t axi_offset) : m_axi_offset{axi_offset} {
+    // TODO:
   }
 };
 

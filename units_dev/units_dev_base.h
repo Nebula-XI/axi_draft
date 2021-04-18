@@ -2,8 +2,6 @@
 
 #include <memory>
 
-#include "units_info_base.h"
-
 namespace InSys {
 
 struct unit_dev_root_interface {
@@ -20,21 +18,6 @@ class unit_dev_interface : public unit_dev_root_interface {
 
  protected:
   interface_type m_io{};
-};
-
-template <typename unit_info_type>
-class unit_dev_base {
- public:
-  using info_type = unit_info_type;
-  unit_dev_base() = default;
-  virtual ~unit_dev_base() noexcept = default;
-  template <typename unit_dev_type = info_type>
-  unit_dev_base(unit_dev_type &&info)
-      : m_info{std::forward<unit_dev_type>(info)} {}
-  auto &get_info() const noexcept { return m_info; }
-
- private:
-  info_type m_info{};
 };
 
 template <typename unit_dev_type, typename... Args>
