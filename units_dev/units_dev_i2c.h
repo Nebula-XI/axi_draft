@@ -42,7 +42,7 @@ class unit_dev_i2c_mux : public unit_dev_interface,
   }
 
  protected:
-  void select_segment() {
+  virtual void select_segment() {
     // TODO: Добавить управление сегментом
     std::printf("select_segment[%d]\n", m_segment);
   }
