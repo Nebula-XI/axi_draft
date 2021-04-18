@@ -4,7 +4,7 @@
 
 namespace InSys {
 
-class unit_dev_axi_i2c final : public unit_dev_root_interface {
+class unit_dev_axi_i2c final : public unit_dev_axi_interface {
   uint64_t m_axi_offset{};
   uint32_t m_address{};
   double m_frequency{};

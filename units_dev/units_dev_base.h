@@ -4,14 +4,14 @@
 
 namespace InSys {
 
-struct unit_dev_root_interface {
-  using interface_type = std::shared_ptr<unit_dev_root_interface>;
+struct unit_dev_axi_interface {
+  using interface_type = std::shared_ptr<unit_dev_axi_interface>;
   virtual std::size_t read() = 0;
   virtual std::size_t write() = 0;
-  virtual ~unit_dev_root_interface() noexcept = default;
+  virtual ~unit_dev_axi_interface() noexcept = default;
 };
 
-class unit_dev_interface : public unit_dev_root_interface {
+class unit_dev_interface : public unit_dev_axi_interface {
  public:
   unit_dev_interface() = default;
   template <typename unit_dev_type = interface_type>
