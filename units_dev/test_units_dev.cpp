@@ -34,14 +34,15 @@ int main(int argc, char *argv[]) try {
       return make_unit_dev<unit_dev_i2c>();
     }
     if (is_info_i2c_mux) {
-      return make_unit_dev<unit_dev_i2c>(make_unit_dev<unit_dev_i2c_mux>(
-          segment, make_unit_dev<unit_dev_axi_i2c>(
-                       info_axi_i2c_opt->axi_offset(), info_i2c_mux.address(),
-                       info_i2c_mux.frequency())));
+      return make_unit_dev<unit_dev_i2c>(
+          info_i2c_dev.address(), info_i2c_dev.frequency(),
+          make_unit_dev<unit_dev_i2c_mux>(
+              info_i2c_mux.address(), info_i2c_mux.frequency(), segment,
+              make_unit_dev<unit_dev_axi_i2c>(info_axi_i2c_opt->axi_offset())));
     } else {
-      return make_unit_dev<unit_dev_i2c>(make_unit_dev<unit_dev_axi_i2c>(
-          info_axi_i2c_opt->axi_offset(), info_i2c_dev.address(),
-          info_i2c_dev.frequency()));
+      return make_unit_dev<unit_dev_i2c>(
+          info_i2c_dev.address(), info_i2c_dev.frequency(),
+          make_unit_dev<unit_dev_axi_i2c>(info_axi_i2c_opt->axi_offset()));
     }
   };
   auto info_i2c_dev_list =

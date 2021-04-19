@@ -6,13 +6,10 @@ namespace InSys {
 
 class unit_dev_axi_i2c final : public unit_dev_axi_interface {
   uint64_t m_axi_offset{};
-  uint32_t m_address{};
-  double m_frequency{};
 
  public:
   unit_dev_axi_i2c() = default;
-  unit_dev_axi_i2c(uint64_t axi_offset, uint32_t address, double frequency)
-      : m_axi_offset{axi_offset}, m_address{address}, m_frequency{frequency} {
+  unit_dev_axi_i2c(uint64_t axi_offset) : m_axi_offset{axi_offset} {
     // TODO:
   }
   std::size_t read() final {
@@ -28,12 +25,18 @@ class unit_dev_axi_i2c final : public unit_dev_axi_interface {
 };
 
 class unit_dev_i2c_mux : public unit_dev_interface {
+  uint32_t m_address{};
+  double m_frequency{};
   uint32_t m_segment{};
 
  public:
   unit_dev_i2c_mux() = default;
-  unit_dev_i2c_mux(uint32_t segment, interface_type io)
-      : unit_dev_interface{io}, m_segment{segment} {}
+  unit_dev_i2c_mux(uint32_t address, double frequency, uint32_t segment,
+                   interface_type io)
+      : unit_dev_interface{io},
+        m_address{address},
+        m_frequency{frequency},
+        m_segment{segment} {}
   std::size_t read() override {
     select_segment();
     return m_io->read();
@@ -45,15 +48,20 @@ class unit_dev_i2c_mux : public unit_dev_interface {
 
  protected:
   virtual void select_segment() {
-    // TODO: Добавить управление сегментом
+    // TODO: Сделать его виртуальным и в производном классе добавить управление
+    // сегментом
     std::printf("select_segment[%d]\n", m_segment);
   }
 };
 
 class unit_dev_i2c : public unit_dev_interface {
+  uint32_t m_address{};
+  double m_frequency{};
+
  public:
   unit_dev_i2c() = default;
-  unit_dev_i2c(interface_type io) : unit_dev_interface{io} {}
+  unit_dev_i2c(uint32_t address, double frequency, interface_type io)
+      : unit_dev_interface{io}, m_address{address}, m_frequency{frequency} {}
   std::size_t read() override {
     // TODO: выполнить необходимые действия
     std::puts("pre-read");
