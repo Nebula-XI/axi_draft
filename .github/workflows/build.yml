@@ -14,11 +14,11 @@ jobs:
             build_type: "Release", cc: "cl", cxx: "cl",
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
-        - {
-            name: "Ubuntu Clang", artifact: "Linux.tar.xz",
-            os: ubuntu-latest,
-            build_type: "Release", cc: "clang", cxx: "clang++"
-          }
+#        - {
+#            name: "Ubuntu Clang", artifact: "Linux.tar.xz",
+#            os: ubuntu-latest,
+#            build_type: "Release", cc: "clang", cxx: "clang++"
+#          }
 
     steps:
     - uses: actions/checkout@v2
@@ -26,11 +26,6 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{ github.workspace }}/build
 
-    - name: Configure CMake
-      shell: cmake -P {0}
-      working-directory: ${{ github.workspace }}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-      
     - name: Configure CMake
       shell: cmake -P {0}
       run: |
