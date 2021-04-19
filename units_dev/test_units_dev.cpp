@@ -6,6 +6,21 @@ using namespace InSys;
 static const std::string_view g_config{"TODO: add configuration"};
 
 int main(int argc, char *argv[]) try {
+  /****************** TEST ******************/
+  auto dev_axi_i2c{make_unit_dev<unit_dev_axi_i2c>()};
+  dev_axi_i2c->configure();
+  dev_axi_i2c->read(0);
+  dev_axi_i2c->write(0, {});
+  print_line();
+  auto dev_i2c_mux{make_unit_dev<unit_dev_i2c_mux>(0, dev_axi_i2c)};
+  dev_i2c_mux->read(0);
+  dev_i2c_mux->write(0, {});
+  print_line();
+  auto dev_i2c{make_unit_dev<unit_dev_i2c>(dev_axi_i2c)};
+  dev_i2c->read(0);
+  dev_i2c->write(0, {});
+  /****************** TEST ******************/
+
   unit_info_i2c_parser info_i2c_parser{g_config};
   auto info_i2c_mux_list =
       info_i2c_parser.get_info<unit_info_i2c_parser::mux_parser>();
@@ -29,25 +44,28 @@ int main(int argc, char *argv[]) try {
         info_i2c_parser.get_by_uid<unit_info_i2c_parser::axi_parser>(
             (is_info_i2c_mux) ? info_i2c_mux.parent_uid()
                               : info_i2c_dev.parent_uid());
-    if (!info_axi_i2c_opt) {
-      print_info_not_found();
-      return make_unit_dev<unit_dev_i2c>();
-    }
-    if (is_info_i2c_mux) {
-      return make_unit_dev<unit_dev_i2c>(
-          info_i2c_dev.address(), info_i2c_dev.frequency(),
-          make_unit_dev<unit_dev_i2c_mux>(
-              info_i2c_mux.address(), info_i2c_mux.frequency(), segment,
-              make_unit_dev<unit_dev_axi_i2c>(info_axi_i2c_opt->axi_offset())));
-    } else {
-      return make_unit_dev<unit_dev_i2c>(
-          info_i2c_dev.address(), info_i2c_dev.frequency(),
-          make_unit_dev<unit_dev_axi_i2c>(info_axi_i2c_opt->axi_offset()));
-    }
+    /*
+     if (!info_axi_i2c_opt) {
+       print_info_not_found();
+       return make_unit_dev<unit_dev_i2c>();
+     }
+     if (is_info_i2c_mux) {
+       return make_unit_dev<unit_dev_i2c>(
+           info_i2c_dev.address(), info_i2c_dev.frequency(),
+           make_unit_dev<unit_dev_i2c_mux>(
+               info_i2c_mux.address(), info_i2c_mux.frequency(), segment,
+               make_unit_dev<unit_dev_axi_i2c>(info_axi_i2c_opt->axi_offset())));
+     } else {
+       return make_unit_dev<unit_dev_i2c>(
+           info_i2c_dev.address(), info_i2c_dev.frequency(),
+           make_unit_dev<unit_dev_axi_i2c>(info_axi_i2c_opt->axi_offset()));
+     }
+     */
   };
   auto info_i2c_dev_list =
       info_i2c_parser.get_info<unit_info_i2c_parser::dev_parser>();
-  for (auto &info_i2c_dev : info_i2c_dev_list) {
+  /*
+    for (auto &info_i2c_dev : info_i2c_dev_list) {
     auto dev_i2c = create_i2c_dev(std::move(info_i2c_dev));
     if (!dev_i2c) {
       continue;
@@ -56,7 +74,7 @@ int main(int argc, char *argv[]) try {
     dev_i2c->read();
     dev_i2c->write();
     print_line();
-  }
+  }*/
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
   std::cerr << e.what() << std::endl;

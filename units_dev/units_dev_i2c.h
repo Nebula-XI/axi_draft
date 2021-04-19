@@ -4,73 +4,85 @@
 
 namespace InSys {
 
-class unit_dev_axi_i2c final : public unit_dev_axi_interface {
+using i2c_address = uint16_t;
+using i2c_data = std::vector<uint8_t>;
+
+struct unit_dev_i2c_interface {
+  virtual size_t write(i2c_address, const i2c_data&) = 0;
+  virtual i2c_data read(i2c_address) = 0;
+  virtual ~unit_dev_i2c_interface() noexcept = default;
+};
+
+struct unit_dev_axi_i2c_interface
+    : unit_dev_i2c_interface,
+      unit_dev_axi_interface<unit_dev_axi_i2c_interface> {
+  virtual ~unit_dev_axi_i2c_interface() noexcept = default;
+  virtual void configure() = 0;
+};
+
+using unit_dev_i2c_base =
+    unit_dev_base<unit_dev_axi_i2c_interface, unit_dev_i2c_interface>;
+
+class unit_dev_axi_i2c final : public unit_dev_axi_i2c_interface {
   uint64_t m_axi_offset{};
+  // TODO: добавить необходимую конфигурацию axi_i2c
 
  public:
   unit_dev_axi_i2c() = default;
-  unit_dev_axi_i2c(uint64_t axi_offset) : m_axi_offset{axi_offset} {
-    // TODO:
+  // TODO:
+  void configure() final {
+    // TODO: добавить конфигурирование \
+    обновить только те параметры которые необходимо
+    std::puts("configure axi_i2c");
   }
-  std::size_t read() final {
-    // TODO: добавить чтение
-    std::puts("read");
+  size_t write(i2c_address address, const i2c_data& data) final {
+    // TODO: добавить запись
+    std::puts("write axi_i2c");
     return {};
   }
-  std::size_t write() final {
-    // TODO: добавить запись
-    std::puts("write");
+  i2c_data read(i2c_address address) final {
+    // TODO: добавить чтение
+    std::puts("read axi_i2c");
     return {};
   }
 };
 
-class unit_dev_i2c_mux : public unit_dev_interface {
-  uint32_t m_address{};
-  double m_frequency{};
+class unit_dev_i2c_mux : public unit_dev_i2c_base {
   uint32_t m_segment{};
 
  public:
   unit_dev_i2c_mux() = default;
-  unit_dev_i2c_mux(uint32_t address, double frequency, uint32_t segment,
-                   interface_type io)
-      : unit_dev_interface{io},
-        m_address{address},
-        m_frequency{frequency},
-        m_segment{segment} {}
-  std::size_t read() override {
-    select_segment();
-    return m_io->read();
+  unit_dev_i2c_mux(uint32_t segment, axi_interface_type io)
+      : unit_dev_i2c_base{io}, m_segment{segment} {}
+  size_t write(i2c_address address, const i2c_data& data) final {
+    std::puts("write i2c_mux");
+    m_io->configure();
+    m_io->write(0, {});
+    return {};
   }
-  std::size_t write() override {
-    select_segment();
-    return m_io->write();
-  }
-
- protected:
-  virtual void select_segment() {
-    // TODO: Сделать его виртуальным и в производном классе добавить управление
-    // сегментом
-    std::printf("select_segment[%d]\n", m_segment);
+  i2c_data read(i2c_address address) final {
+    std::puts("read i2c_mux");
+    m_io->configure();
+    m_io->read(0);
+    return {};
   }
 };
 
-class unit_dev_i2c : public unit_dev_interface {
-  uint32_t m_address{};
-  double m_frequency{};
-
+class unit_dev_i2c : public unit_dev_i2c_base {
  public:
   unit_dev_i2c() = default;
-  unit_dev_i2c(uint32_t address, double frequency, interface_type io)
-      : unit_dev_interface{io}, m_address{address}, m_frequency{frequency} {}
-  std::size_t read() override {
-    // TODO: выполнить необходимые действия
-    std::puts("pre-read");
-    return m_io->read();
+  unit_dev_i2c(axi_interface_type io) : unit_dev_i2c_base{io} {}
+  size_t write(i2c_address address, const i2c_data& data) final {
+    std::puts("write i2c_dev");
+    m_io->configure();
+    m_io->write(0, {});
+    return {};
   }
-  std::size_t write() override {
-    // TODO: выполнить необходимые действия
-    std::puts("pre-write");
-    return m_io->write();
+  i2c_data read(i2c_address address) final {
+    std::puts("read i2c_dev");
+    m_io->configure();
+    m_io->read(0);
+    return {};
   }
 };
 

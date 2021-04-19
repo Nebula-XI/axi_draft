@@ -4,22 +4,23 @@
 
 namespace InSys {
 
+template <typename unit_dev_axi_interface_type>
 struct unit_dev_axi_interface {
-  using interface_type = std::shared_ptr<unit_dev_axi_interface>;
-  virtual std::size_t read() = 0;
-  virtual std::size_t write() = 0;
+  using shared = typename std::shared_ptr<unit_dev_axi_interface_type>;
   virtual ~unit_dev_axi_interface() noexcept = default;
 };
 
-class unit_dev_interface : public unit_dev_axi_interface {
+template <typename unit_dev_axi_interface_type,
+          typename unit_dev_interface_type>
+class unit_dev_base : unit_dev_interface_type {
  public:
-  unit_dev_interface() = default;
-  template <typename unit_dev_type = interface_type>
-  unit_dev_interface(unit_dev_type &&io)
-      : m_io{std::forward<unit_dev_type>(io)} {}
+  using axi_interface_type = typename unit_dev_axi_interface_type::shared;
+  unit_dev_base() = default;
+  template <typename unit_dev_type = axi_interface_type>
+  unit_dev_base(unit_dev_type &&io) : m_io{std::forward<unit_dev_type>(io)} {}
 
  protected:
-  interface_type m_io{};
+  axi_interface_type m_io{};
 };
 
 template <typename unit_dev_type, typename... Args>
