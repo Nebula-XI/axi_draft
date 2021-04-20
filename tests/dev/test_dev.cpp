@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) try {
     print_line();
     print_info(i2c_dev_info);
     info_i2c_mux i2c_mux_info{};
-    uint32_t i2c_mux_segment{};
+    i2c_segment i2c_mux_segment{};
     bool i2c_mux_is_present{};
     for (const auto &info : i2c_mux_info_list) {
       auto it = info.segments().find(i2c_dev_info.parent_uid());
