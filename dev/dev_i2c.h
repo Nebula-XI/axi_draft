@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dev_base.h"
+
 namespace InSys {
 
 using i2c_address = uint16_t;
