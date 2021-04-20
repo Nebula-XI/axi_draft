@@ -6,6 +6,6 @@ project(axi_draft
 
 add_subdirectory(info)
 add_subdirectory(dev)
-add_subdirectory(devices)
+#add_subdirectory(devices)
 add_subdirectory(tests/info)
 add_subdirectory(tests/dev)
