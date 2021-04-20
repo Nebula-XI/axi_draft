@@ -5,6 +5,7 @@ namespace InSys {
 
 using i2c_address = uint16_t;
 using i2c_data = std::vector<uint8_t>;
+using i2c_segment = uint32_t;
 
 struct dev_i2c_interface : dev_interface<dev_i2c_interface> {
   virtual size_t write(i2c_address, const i2c_data&) = 0;
@@ -34,14 +35,14 @@ class dev_axi_i2c final : public dev_axi_i2c_interface {
 };
 
 class dev_i2c_mux : public dev_i2c_base<dev_i2c_mux> {
-  uint32_t m_segment{};
+  i2c_segment m_segment{};
 
  public:
   dev_i2c_mux() = default;
-  dev_i2c_mux(uint32_t segment, axi_interface io)
+  dev_i2c_mux(i2c_segment segment, axi_interface io)
       : dev_base{io}, m_segment{segment} {}
-  dev_i2c_mux(uint32_t segment, axi_interface io, parent_functor parent_functor)
-      : dev_base{io, parent_functor}, m_segment{segment} {}
+  dev_i2c_mux(i2c_segment segment, axi_interface io, parent_functor fn)
+      : dev_base{io, fn}, m_segment{segment} {}
   size_t write(i2c_address address, const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
@@ -62,8 +63,8 @@ class dev_i2c : public dev_i2c_base<dev_i2c_mux> {
  public:
   dev_i2c() = default;
   dev_i2c(axi_interface io) : dev_base{io} {}
-  dev_i2c(axi_interface io, parent_functor parent_functor)
-      : dev_base{io, parent_functor} {}
+  dev_i2c(axi_interface io, parent_functor fn)
+      : dev_base{io, fn} {}
   template <typename... args_type>
   static auto create(args_type&&... args) {
     return make_dev<dev_i2c>(std::forward<args_type>(args)...);
