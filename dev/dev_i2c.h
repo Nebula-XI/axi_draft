@@ -18,9 +18,9 @@ struct dev_axi_i2c_interface
   virtual void configure() = 0;
 };
 
-template <typename dev_type>
+template <typename dev_parent_type>
 using dev_i2c_base =
-    dev_base<dev_axi_i2c_interface, dev_i2c_interface, dev_type>;
+    dev_base<dev_axi_i2c_interface, dev_i2c_interface, dev_parent_type>;
 
 class dev_axi_i2c final : public dev_axi_i2c_interface {
   uint64_t m_axi_offset{};
