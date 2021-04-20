@@ -4,6 +4,8 @@ project(axi_draft
 	DESCRIPTION "axi_draft Project"
 )
 
-add_subdirectory(units_info)
-add_subdirectory(units_dev)
-
+add_subdirectory(info)
+add_subdirectory(dev)
+add_subdirectory(devices)
+add_subdirectory(tests/info)
+add_subdirectory(tests/dev)

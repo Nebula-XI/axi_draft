@@ -1,6 +1,6 @@
 #pragma once
 
-#include "units_dev_i2c.h"
+#include "dev_i2c.h"
 
 namespace InSys {
 

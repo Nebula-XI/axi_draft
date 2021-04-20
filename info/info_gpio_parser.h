@@ -1,20 +1,10 @@
 #pragma once
 
-#include "units_info_base.h"
+#include "info_gpio.h"
 
 namespace InSys {
 
-class unit_info_axi_gpio final : public unit_info_axi_base {
- public:
-  using list_type = units_info_list<unit_info_axi_gpio>;
-  unit_info_axi_gpio() : unit_info_axi_base{"axi-gpio"} {}
-  unit_info_axi_gpio(const std::string_view &name,
-                     const std::string_view &label, uint64_t axi_offset)
-      : unit_info_axi_base{name, label, axi_offset, "axi-gpio"} {}
-};
-
-class unit_info_axi_gpio_parser
-    : public units_info_base_parser<units_info_list, unit_info_axi_gpio> {
+class info_axi_gpio_parser : public info_base_parser<info_list, info_axi_gpio> {
   void parser(const std::string_view &config) override {
     // TODO: add configuration parser
     m_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
@@ -23,14 +13,14 @@ class unit_info_axi_gpio_parser
   }
 
  public:
-  unit_info_axi_gpio_parser() = default;
-  unit_info_axi_gpio_parser(const std::string_view &config) { parser(config); }
+  info_axi_gpio_parser() = default;
+  info_axi_gpio_parser(const std::string_view &config) { parser(config); }
 };
 
-class unit_info_gpio_parser final : public unit_info_axi_gpio_parser {
+class info_gpio_parser final : public info_axi_gpio_parser {
  public:
-  using axi_parser = unit_info_axi_gpio_parser;
-  unit_info_gpio_parser(const std::string_view &config) { parser(config); }
+  using axi_parser = info_axi_gpio_parser;
+  info_gpio_parser(const std::string_view &config) { parser(config); }
   template <typename parser>
   typename parser::list_type get_info() const {
     return parser::get_info();
@@ -45,8 +35,7 @@ class unit_info_gpio_parser final : public unit_info_axi_gpio_parser {
     return parser::get_by_label(label);
   }
   template <typename parser>
-  std::optional<typename parser::value_type> get_by_uid(
-      unit_info_uid uid) const {
+  std::optional<typename parser::value_type> get_by_uid(info_uid uid) const {
     return parser::get_by_uid(uid);
   }
 
