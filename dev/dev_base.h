@@ -5,6 +5,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+
 namespace InSys {
 
 template <typename dev_interface_type>
