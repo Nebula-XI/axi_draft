@@ -19,13 +19,18 @@ struct dev_axi_interface : dev_interface_type {
   virtual ~dev_axi_interface() noexcept = default;
 };
 
+template <typename dev_type, typename... args_type>
+auto make_dev(args_type &&...args) {
+  return std::make_shared<dev_type>(std::forward<args_type>(args)...);
+}
+
 template <typename dev_axi_interface_type, typename dev_interface_type,
-          typename unit_dev_type>
+          typename dev_parent_type>
 class dev_base : public dev_interface_type {
  public:
   using dev_interface = typename dev_axi_interface_type::dev_shared;
   using axi_interface = typename dev_axi_interface_type::axi_shared;
-  using parent_functor = std::shared_ptr<unit_dev_type>;
+  using parent_functor = std::shared_ptr<dev_parent_type>;
   dev_base() = default;
   template <typename axi_interface_type = axi_interface,
             typename parent_functor_type = parent_functor>
@@ -48,10 +53,5 @@ class dev_base : public dev_interface_type {
  private:
   parent_functor m_parent_functor{};
 };
-
-template <typename dev_type, typename... args_type>
-auto make_dev(args_type &&...args) {
-  return std::make_shared<dev_type>(std::forward<args_type>(args)...);
-}
 
 }  // namespace InSys

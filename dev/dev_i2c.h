@@ -64,6 +64,10 @@ class dev_i2c : public dev_i2c_base<dev_i2c_mux> {
   dev_i2c(axi_interface io) : dev_base{io} {}
   dev_i2c(axi_interface io, parent_functor parent_functor)
       : dev_base{io, parent_functor} {}
+  template <typename... args_type>
+  static auto create(args_type&&... args) {
+    return make_dev<dev_i2c>(std::forward<args_type>(args)...);
+  }
   size_t write(i2c_address address, const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
