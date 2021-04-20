@@ -7,17 +7,20 @@ static const std::string_view g_config{"TODO: add configuration"};
 
 int main(int argc, char *argv[]) try {
   /****************** TEST ******************/
-  auto dev_axi_i2c{make_unit_dev<unit_dev_axi_i2c>()};
-  dev_axi_i2c->configure();
-  dev_axi_i2c->read(0);
-  dev_axi_i2c->write(0, {});
+  auto create = []() {
+    auto dev_axi_i2c{make_unit_dev<unit_dev_axi_i2c>()};
+    auto dev_i2c_mux{make_unit_dev<unit_dev_i2c_mux>(0, dev_axi_i2c)};
+    auto dev_i2c_mux2{
+        make_unit_dev<unit_dev_i2c_mux>(0, dev_axi_i2c, dev_i2c_mux)};
+    auto dev_i2c_mux3{
+        make_unit_dev<unit_dev_i2c_mux>(0, dev_axi_i2c, dev_i2c_mux2)};
+    auto dev_i2c{make_unit_dev<unit_dev_i2c>(dev_axi_i2c, dev_i2c_mux3)};
+    return dev_i2c;
+  };
   print_line();
-  auto dev_i2c_mux{make_unit_dev<unit_dev_i2c_mux>(0, dev_axi_i2c)};
-  dev_i2c_mux->read(0);
-  dev_i2c_mux->write(0, {});
-  print_line();
-  auto dev_i2c{make_unit_dev<unit_dev_i2c>(dev_axi_i2c)};
+  auto dev_i2c = create();
   dev_i2c->read(0);
+  print_line();
   dev_i2c->write(0, {});
   /****************** TEST ******************/
 

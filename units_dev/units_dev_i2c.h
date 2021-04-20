@@ -20,8 +20,9 @@ struct unit_dev_axi_i2c_interface
   virtual void configure() = 0;
 };
 
-using unit_dev_i2c_base =
-    unit_dev_base<unit_dev_axi_i2c_interface, unit_dev_i2c_interface>;
+template <typename unit_dev_type>
+using unit_dev_i2c_base = unit_dev_base<unit_dev_axi_i2c_interface,
+                                        unit_dev_i2c_interface, unit_dev_type>;
 
 class unit_dev_axi_i2c final : public unit_dev_axi_i2c_interface {
   uint64_t m_axi_offset{};
@@ -47,39 +48,58 @@ class unit_dev_axi_i2c final : public unit_dev_axi_i2c_interface {
   }
 };
 
-class unit_dev_i2c_mux : public unit_dev_i2c_base {
+class unit_dev_i2c_mux
+    : public unit_dev_base<unit_dev_axi_i2c_interface, unit_dev_i2c_interface,
+                           unit_dev_i2c_mux> {
   uint32_t m_segment{};
 
  public:
   unit_dev_i2c_mux() = default;
   unit_dev_i2c_mux(uint32_t segment, axi_interface_type io)
-      : unit_dev_i2c_base{io}, m_segment{segment} {}
+      : unit_dev_base{io}, m_segment{segment} {}
+  unit_dev_i2c_mux(uint32_t segment, axi_interface_type io,
+                   parent_functor_type mux)
+      : unit_dev_base{io, mux}, m_segment{segment} {}
   size_t write(i2c_address address, const i2c_data& data) final {
+    parent();
     std::puts("write i2c_mux");
     m_io->configure();
     m_io->write(0, {});
     return {};
   }
   i2c_data read(i2c_address address) final {
+    parent();
     std::puts("read i2c_mux");
     m_io->configure();
     m_io->read(0);
     return {};
   }
+  void operator()() { segment(); }
+  virtual void segment() {
+    parent();
+    std::puts("segment i2c_mux");
+    read(0);
+    write(0, {});
+  }
 };
 
-class unit_dev_i2c : public unit_dev_i2c_base {
+class unit_dev_i2c
+    : public unit_dev_base<unit_dev_axi_i2c_interface, unit_dev_i2c_interface,
+                           unit_dev_i2c_mux> {
  public:
   unit_dev_i2c() = default;
-  unit_dev_i2c(axi_interface_type io) : unit_dev_i2c_base{io} {}
+  unit_dev_i2c(axi_interface_type io, parent_functor_type mux)
+      : unit_dev_base{io, mux} {}
   size_t write(i2c_address address, const i2c_data& data) final {
     std::puts("write i2c_dev");
+    parent();
     m_io->configure();
     m_io->write(0, {});
     return {};
   }
   i2c_data read(i2c_address address) final {
     std::puts("read i2c_dev");
+    parent();
     m_io->configure();
     m_io->read(0);
     return {};
