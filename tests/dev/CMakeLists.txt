@@ -10,6 +10,8 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
 endif()
 
-include_directories( "../../dev" "../include" "../../info")
+include_directories(
+    "../../dev" "../../devices/i2c" "../include" "../../info"
+)
 
 add_executable(${PROJECT_NAME} test_dev.cpp)

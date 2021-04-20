@@ -2,6 +2,7 @@
 #include "dev_i2c.h"
 #include "dev_sdram.h"
 #include "dev_spi.h"
+#include "ina21x.h"
 #include "test_info.h"
 
 using namespace InSys;
@@ -57,6 +58,11 @@ int main(int argc, char *argv[]) try {
     auto data = i2c_dev->read(0);
     auto writed = i2c_dev->write(0, {});
   }
+
+  auto ic_ina21x{make_dev<chips::ina21x>(make_dev<dev_axi_i2c>(0))};
+  auto data = ic_ina21x->read(0);
+  auto writed = ic_ina21x->write(0, {});
+
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
   std::cerr << e.what() << std::endl;

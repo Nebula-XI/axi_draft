@@ -1,7 +1,6 @@
 #pragma once
 
 #include "dev_base.h"
-
 namespace InSys {
 
 using i2c_address = uint16_t;
@@ -44,11 +43,13 @@ class dev_i2c_mux : public dev_i2c_base<dev_i2c_mux> {
   dev_i2c_mux(uint32_t segment, axi_interface io, parent_functor parent_functor)
       : dev_base{io, parent_functor}, m_segment{segment} {}
   size_t write(i2c_address address, const i2c_data& data) final {
+    assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
     m_io->configure();
     return m_io->write(address, data);
   }
   i2c_data read(i2c_address address) final {
+    assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
     m_io->configure();
     return m_io->read(address);
@@ -64,11 +65,13 @@ class dev_i2c : public dev_i2c_base<dev_i2c_mux> {
   dev_i2c(axi_interface io, parent_functor parent_functor)
       : dev_base{io, parent_functor} {}
   size_t write(i2c_address address, const i2c_data& data) final {
+    assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
     m_io->configure();
     return m_io->write(address, data);
   }
   i2c_data read(i2c_address address) final {
+    assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
     m_io->configure();
     return m_io->read(address);
