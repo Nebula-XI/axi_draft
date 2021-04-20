@@ -55,4 +55,13 @@ class dev_base : public dev_interface_type {
   parent_functor m_parent_functor{};
 };
 
+template <typename dev_creator_type>
+class dev_base_creator {
+ public:
+  template <typename... args_type>
+  static auto create(args_type &&...args) {
+    return make_dev<dev_creator_type>(std::forward<args_type>(args)...);
+  }
+};
+
 }  // namespace InSys

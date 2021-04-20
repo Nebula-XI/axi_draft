@@ -24,7 +24,8 @@ template <typename dev_parent_type>
 using dev_i2c_base =
     dev_base<dev_axi_i2c_interface, dev_i2c_interface, dev_parent_type>;
 
-class dev_axi_i2c final : public dev_axi_i2c_interface {
+class dev_axi_i2c final : public dev_axi_i2c_interface,
+                          public dev_base_creator<dev_axi_i2c> {
   uint64_t m_axi_offset{};
 
  public:
@@ -35,7 +36,8 @@ class dev_axi_i2c final : public dev_axi_i2c_interface {
   i2c_data read(i2c_address address) final { return {}; }
 };
 
-class dev_i2c_mux : public dev_i2c_base<dev_i2c_mux> {
+class dev_i2c_mux : public dev_i2c_base<dev_i2c_mux>,
+                    public dev_base_creator<dev_i2c_mux> {
   i2c_segment m_segment{};
 
  public:
@@ -60,16 +62,12 @@ class dev_i2c_mux : public dev_i2c_base<dev_i2c_mux> {
   virtual void segment() { parent(); }
 };
 
-class dev_i2c : public dev_i2c_base<dev_i2c_mux> {
+class dev_i2c : public dev_i2c_base<dev_i2c_mux>,
+                public dev_base_creator<dev_i2c> {
  public:
   dev_i2c() = default;
   dev_i2c(axi_interface io) : dev_base{io} {}
-  dev_i2c(axi_interface io, parent_functor fn)
-      : dev_base{io, fn} {}
-  template <typename... args_type>
-  static auto create(args_type&&... args) {
-    return make_dev<dev_i2c>(std::forward<args_type>(args)...);
-  }
+  dev_i2c(axi_interface io, parent_functor fn) : dev_base{io, fn} {}
   size_t write(i2c_address address, const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();

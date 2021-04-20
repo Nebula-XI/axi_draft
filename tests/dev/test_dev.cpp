@@ -38,14 +38,14 @@ int main(int argc, char *argv[]) try {
       return make_dev<dev_i2c>();
     }
     if (i2c_mux_is_present) {
-      return make_dev<dev_i2c>(
-          make_dev<dev_axi_i2c>(i2c_axi_info_opt->axi_offset()),
-          make_dev<dev_i2c_mux>(
+      return dev_i2c::create(
+          dev_axi_i2c::create(i2c_axi_info_opt->axi_offset()),
+          dev_i2c_mux::create(
               i2c_mux_segment,
-              make_dev<dev_axi_i2c>(i2c_axi_info_opt->axi_offset())));
+              dev_axi_i2c::create(i2c_axi_info_opt->axi_offset())));
     } else {
-      return make_dev<dev_i2c>(
-          make_dev<dev_axi_i2c>(i2c_axi_info_opt->axi_offset()));
+      return dev_i2c::create(
+          dev_axi_i2c::create(i2c_axi_info_opt->axi_offset()));
     }
   };
   auto i2c_dev_info_list =
@@ -58,11 +58,9 @@ int main(int argc, char *argv[]) try {
     auto data = i2c_dev->read(0);
     auto writed = i2c_dev->write(0, {});
   }
-
-  auto ic_ina21x{chips::ina21x::create(make_dev<dev_axi_i2c>(0))};
+  auto ic_ina21x{chips::ina21x::create(dev_axi_i2c::create(0))};
   auto data = ic_ina21x->read(0);
   auto writed = ic_ina21x->write(0, {});
-
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
   std::cerr << e.what() << std::endl;
