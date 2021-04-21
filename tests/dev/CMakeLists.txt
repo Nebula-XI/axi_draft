@@ -16,4 +16,4 @@ include_directories(
 
 add_executable(${PROJECT_NAME} test_dev.cpp)
 
-add_test("example" test_dev)
+add_test("Test dev" test_dev)
