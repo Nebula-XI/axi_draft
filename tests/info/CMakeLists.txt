@@ -13,4 +13,4 @@ endif()
 include_directories( "../include" "../../info")
 add_executable(${PROJECT_NAME} test_info.cpp)
 
-add_test("Test info" test_info)
+add_test("test_info" test_info)
