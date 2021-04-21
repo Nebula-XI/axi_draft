@@ -8,80 +8,163 @@ using i2c_address = uint16_t;
 using i2c_data = std::vector<uint8_t>;
 using i2c_segment = uint32_t;
 
+enum class i2c_addressing { _7bit, _10bit };
+
 struct dev_i2c_interface : dev_interface<dev_i2c_interface> {
-  virtual size_t write(i2c_address, const i2c_data&) = 0;
-  virtual i2c_data read(i2c_address) = 0;
   virtual ~dev_i2c_interface() noexcept = default;
 };
 
 struct dev_axi_i2c_interface
     : dev_axi_interface<dev_axi_i2c_interface, dev_i2c_interface> {
+  virtual void configure(i2c_address, double, i2c_addressing) noexcept = 0;
+  virtual void set_address(i2c_address) noexcept = 0;
+  virtual i2c_address get_address() const noexcept = 0;
+  virtual void set_addressing(i2c_addressing) noexcept = 0;
+  virtual i2c_addressing get_addressing() const noexcept = 0;
+  virtual void set_frequency(double) noexcept = 0;
+  virtual double get_frequency() const noexcept = 0;
   virtual ~dev_axi_i2c_interface() noexcept = default;
-  virtual void configure() = 0;
 };
 
+namespace detail {
+
 template <typename dev_parent_type>
-using dev_i2c_base =
-    dev_base<dev_axi_i2c_interface, dev_i2c_interface, dev_parent_type>;
+class dev_i2c_base : public dev_base<dev_axi_i2c_interface, dev_i2c_interface,
+                                     dev_parent_type> {
+ public:
+  dev_i2c_base() = default;
+  dev_i2c_base(typename dev_base<dev_axi_i2c_interface, dev_i2c_interface,
+                                 dev_parent_type>::axi_interface io,
+               typename dev_base<dev_axi_i2c_interface, dev_i2c_interface,
+                                 dev_parent_type>::parent_functor fn,
+               i2c_address address, double frequency = double(400_kHz),
+               i2c_addressing addressing = i2c_addressing::_7bit)
+      : dev_base<dev_axi_i2c_interface, dev_i2c_interface, dev_parent_type>{io,
+                                                                            fn},
+        m_address{address},
+        m_frequency{frequency},
+        m_addressing{addressing} {}
+  dev_i2c_base(typename dev_base<dev_axi_i2c_interface, dev_i2c_interface,
+                                 dev_parent_type>::axi_interface io,
+               i2c_address address, double frequency = double(400_kHz),
+               i2c_addressing addressing = i2c_addressing::_7bit)
+      : dev_base<dev_axi_i2c_interface, dev_i2c_interface, dev_parent_type>{io},
+        m_address{address},
+        m_frequency{frequency},
+        m_addressing{addressing} {}
+
+ protected:
+  i2c_address m_address{};
+  double m_frequency{};
+  i2c_addressing m_addressing{};
+};
+
+}  // namespace detail
 
 class dev_axi_i2c final : public dev_axi_i2c_interface,
-                          public dev_base_creator<dev_axi_i2c> {
+                          public detail::dev_base_creator<dev_axi_i2c> {
   uint64_t m_axi_offset{};
 
  public:
   // TODO: Добавить управление драйвером i2c. \
            Необходимо обеспечить чтобы на каждый оффсет был один экземпляр. \
-           Конфигурацию обновлять если необходимо. 
+           Конфигурацию обновлять если необходимо.
   dev_axi_i2c() = default;
   dev_axi_i2c(uint64_t axi_offset) : m_axi_offset{axi_offset} {}
-  void configure() final {}
-  size_t write(i2c_address address, const i2c_data& data) final { return {}; }
-  i2c_data read(i2c_address address) final { return {}; }
+  void configure(i2c_address address, double frequency,
+                 i2c_addressing addressing) noexcept final {
+    // TODO: проверить какой из параметром изменился и обновить
+  }
+  uint64_t get_axi_offset() const noexcept final { return m_axi_offset; }
+  void set_address(i2c_address address) noexcept final {
+    // TODO: добавить установку адреса
+  }
+  i2c_address get_address() const noexcept final {
+    // TODO: добавить получение адреса
+    return {};
+  }
+  void set_addressing(i2c_addressing addressing) noexcept final {
+    // TODO: добавить устрановку режима адресации
+  }
+  i2c_addressing get_addressing() const noexcept final {
+    // TODO: добавить запрос режима адресации
+    return {};
+  }
+  void set_frequency(double frequency) noexcept final {
+    // TODO: добавить установку частоты
+  }
+  double get_frequency() const noexcept final {
+    // TODO: добавить запрос частоты
+    return {};
+  }
+  size_t write(const i2c_data& data) final {
+    // добавить запись i2c
+    return {};
+  }
+  i2c_data read() final {
+    // добавить чтение i2c
+    return {};
+  }
 };
 
-class dev_i2c_mux : public dev_i2c_base<dev_i2c_mux>,
-                    public dev_base_creator<dev_i2c_mux> {
+class dev_i2c_mux : public detail::dev_i2c_base<dev_i2c_mux>,
+                    public detail::dev_base_creator<dev_i2c_mux> {
   i2c_segment m_segment{};
 
  public:
   dev_i2c_mux() = default;
-  dev_i2c_mux(i2c_segment segment, axi_interface io)
-      : dev_base{io}, m_segment{segment} {}
-  dev_i2c_mux(i2c_segment segment, axi_interface io, parent_functor fn)
-      : dev_base{io, fn}, m_segment{segment} {}
-  size_t write(i2c_address address, const i2c_data& data) final {
+  dev_i2c_mux(i2c_segment segment, axi_interface io, i2c_address address,
+              double frequency = double(400_kHz),
+              i2c_addressing addressing = i2c_addressing::_7bit)
+      : dev_i2c_base{io, address, frequency, addressing}, m_segment{segment} {}
+  dev_i2c_mux(i2c_segment segment, axi_interface io, parent_functor fn,
+              i2c_address address, double frequency = double(400_kHz),
+              i2c_addressing addressing = i2c_addressing::_7bit)
+      : dev_i2c_base{io, fn, address, frequency, addressing},
+        m_segment{segment} {}
+  size_t write(const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
-    m_io->configure();
-    return m_io->write(address, data);
+    m_io->configure(m_address, m_frequency, m_addressing);
+    return m_io->write(data);
   }
-  i2c_data read(i2c_address address) final {
+  i2c_data read() final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
-    m_io->configure();
-    return m_io->read(address);
+    m_io->configure(m_address, m_frequency, m_addressing);
+    return m_io->read();
   }
   void operator()() { segment(); }
-  virtual void segment() { parent(); }
+  virtual void segment() {
+    parent();
+    // TODO: добавить управление выбором сегмента
+    // read / write
+  }
 };
 
-class dev_i2c : public dev_i2c_base<dev_i2c_mux>,
-                public dev_base_creator<dev_i2c> {
+class dev_i2c : public detail::dev_i2c_base<dev_i2c_mux>,
+                public detail::dev_base_creator<dev_i2c> {
  public:
   dev_i2c() = default;
-  dev_i2c(axi_interface io) : dev_base{io} {}
-  dev_i2c(axi_interface io, parent_functor fn) : dev_base{io, fn} {}
-  size_t write(i2c_address address, const i2c_data& data) final {
+  dev_i2c(axi_interface io, i2c_address address,
+          double frequency = double(400_kHz),
+          i2c_addressing addressing = i2c_addressing::_7bit)
+      : dev_i2c_base{io, address, frequency, addressing} {}
+  dev_i2c(axi_interface io, parent_functor fn, i2c_address address,
+          double frequency = double(400_kHz),
+          i2c_addressing addressing = i2c_addressing::_7bit)
+      : dev_i2c_base{io, fn, address, frequency, addressing} {}
+  size_t write(const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
-    m_io->configure();
-    return m_io->write(address, data);
+    m_io->configure(m_address, m_frequency, m_addressing);
+    return m_io->write(data);
   }
-  i2c_data read(i2c_address address) final {
+  i2c_data read() final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     parent();
-    m_io->configure();
-    return m_io->read(address);
+    m_io->configure(m_address, m_frequency, m_addressing);
+    return m_io->read();
   }
 };
 

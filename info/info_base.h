@@ -9,6 +9,8 @@
 #include <utility>
 #include <vector>
 
+#include "common.h"
+
 namespace InSys {
 
 using info_uid = std::size_t;
@@ -109,25 +111,5 @@ class info_base_parser {
   list_type m_info_list{};
   virtual void parser(const std::string_view &config) = 0;
 };
-
-constexpr long double operator"" _kHz(long double value) {
-  return value * 1000;
-}
-constexpr long double operator"" _MHz(long double value) {
-  return value * 1000000;
-}
-constexpr long double operator"" _GHz(long double value) {
-  return value * 1000000000;
-}
-
-constexpr unsigned long long operator"" _kHz(unsigned long long value) {
-  return value * 1000;
-}
-constexpr unsigned long long operator"" _MHz(unsigned long long value) {
-  return value * 1000000;
-}
-constexpr unsigned long long operator"" _GHz(unsigned long long value) {
-  return value * 1000000000;
-}
 
 }  // namespace InSys

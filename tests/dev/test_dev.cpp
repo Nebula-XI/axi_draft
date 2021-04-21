@@ -37,15 +37,16 @@ int main(int argc, char *argv[]) try {
       print_info_not_found();
       return make_dev<dev_i2c>();
     }
+    auto i2c_axi = dev_axi_i2c::create(i2c_axi_info_opt->axi_offset());
     if (i2c_mux_is_present) {
-      return dev_i2c::create(
-          dev_axi_i2c::create(i2c_axi_info_opt->axi_offset()),
-          dev_i2c_mux::create(
-              i2c_mux_segment,
-              dev_axi_i2c::create(i2c_axi_info_opt->axi_offset())));
+      auto i2c_mux =
+          dev_i2c_mux::create(i2c_mux_segment, i2c_axi, i2c_mux_info.address(),
+                              i2c_mux_info.frequency());
+      return dev_i2c::create(i2c_axi, i2c_mux, i2c_dev_info.address(),
+                             i2c_dev_info.frequency());
     } else {
-      return dev_i2c::create(
-          dev_axi_i2c::create(i2c_axi_info_opt->axi_offset()));
+      return dev_i2c::create(i2c_axi, i2c_dev_info.address(),
+                             i2c_dev_info.frequency());
     }
   };
   auto i2c_dev_info_list =
@@ -55,12 +56,12 @@ int main(int argc, char *argv[]) try {
     if (!i2c_dev) {
       continue;
     }
-    auto data = i2c_dev->read(0);
-    auto writed = i2c_dev->write(0, {});
+    auto data = i2c_dev->read();
+    auto writed = i2c_dev->write({});
   }
-  auto ic_ina21x{chips::ina21x::create(dev_axi_i2c::create(0))};
-  auto data = ic_ina21x->read(0);
-  auto writed = ic_ina21x->write(0, {});
+  auto ic_ina21x{chips::ina21x::create(dev_axi_i2c::create(0), 0x49, 100._kHz)};
+  auto data = ic_ina21x->read();
+  auto writed = ic_ina21x->write({});
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {
   std::cerr << e.what() << std::endl;

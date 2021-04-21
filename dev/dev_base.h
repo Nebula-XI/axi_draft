@@ -6,17 +6,22 @@
 #include <utility>
 #include <vector>
 
+#include "common.h"
+
 namespace InSys {
 
 template <typename dev_interface_type>
 struct dev_interface {
   using dev_shared = typename std::shared_ptr<dev_interface_type>;
+  virtual size_t write(const std::vector<uint8_t> &) = 0;
+  virtual std::vector<uint8_t> read() = 0;
   virtual ~dev_interface() noexcept = default;
 };
 
 template <typename dev_axi_interface_type, typename dev_interface_type>
 struct dev_axi_interface : dev_interface_type {
   using axi_shared = typename std::shared_ptr<dev_axi_interface_type>;
+  virtual uint64_t get_axi_offset() const noexcept = 0;
   virtual ~dev_axi_interface() noexcept = default;
 };
 
@@ -24,6 +29,8 @@ template <typename dev_type, typename... args_type>
 auto make_dev(args_type &&...args) {
   return std::make_shared<dev_type>(std::forward<args_type>(args)...);
 }
+
+namespace detail {
 
 template <typename dev_axi_interface_type, typename dev_interface_type,
           typename dev_parent_type>
@@ -54,7 +61,6 @@ class dev_base : public dev_interface_type {
  private:
   parent_functor m_parent_functor{};
 };
-
 template <typename dev_creator_type>
 class dev_base_creator {
  public:
@@ -63,5 +69,7 @@ class dev_base_creator {
     return make_dev<dev_creator_type>(std::forward<args_type>(args)...);
   }
 };
+
+}  // namespace detail
 
 }  // namespace InSys

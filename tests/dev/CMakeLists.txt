@@ -11,7 +11,7 @@ if(MSVC)
 endif()
 
 include_directories(
-    "../../dev" "../../devices/i2c" "../include" "../../info"
+    "../../dev" "../../include" "../../devices/i2c" "../include" "../../info"
 )
 
 add_executable(${PROJECT_NAME} test_dev.cpp)
