@@ -29,6 +29,9 @@ class dev_axi_i2c final : public dev_axi_i2c_interface,
   uint64_t m_axi_offset{};
 
  public:
+  // TODO: Добавить управление драйвером i2c. \
+           Необходимо обеспечить чтобы на каждый оффсет был один экземпляр. \
+           Конфигурацию обновлять если необходимо. 
   dev_axi_i2c() = default;
   dev_axi_i2c(uint64_t axi_offset) : m_axi_offset{axi_offset} {}
   void configure() final {}
