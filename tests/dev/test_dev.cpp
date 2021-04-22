@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) try {
     auto data = i2c_dev->read();
     auto writed = i2c_dev->write({});
   }
-  auto i2c_axi = dev_axi_i2c::create(0));
+  auto i2c_axi = dev_axi_i2c::create(0);
   auto ic_ina21x{chips::ina21x::create(i2c_axi, 0x49, 100._kHz)};
   auto data = ic_ina21x->read();
   auto writed = ic_ina21x->write({});
