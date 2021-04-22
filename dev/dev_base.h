@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-#include "common.h"
+#include "utility.h"
 
 namespace InSys {
 
@@ -51,10 +51,10 @@ class dev_base : public dev_interface_type {
 
  protected:
   axi_interface m_io{};
-  void parent() {
+  void call_parent() {
     if (m_parent_functor) {
-      auto functor = *m_parent_functor;
-      functor();
+      auto parent_functor = *m_parent_functor;
+      parent_functor();
     }
   }
 

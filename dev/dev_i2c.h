@@ -113,30 +113,30 @@ class dev_i2c_mux : public detail::dev_i2c_base<dev_i2c_mux>,
 
  public:
   dev_i2c_mux() = default;
-  dev_i2c_mux(i2c_segment segment, axi_interface io, i2c_address address,
+  dev_i2c_mux(axi_interface io, i2c_segment segment, i2c_address address,
               double frequency = double(400_kHz),
               i2c_addressing addressing = i2c_addressing::_7bit)
       : dev_i2c_base{io, address, frequency, addressing}, m_segment{segment} {}
-  dev_i2c_mux(i2c_segment segment, axi_interface io, parent_functor fn,
+  dev_i2c_mux(axi_interface io, parent_functor fn, i2c_segment segment,
               i2c_address address, double frequency = double(400_kHz),
               i2c_addressing addressing = i2c_addressing::_7bit)
       : dev_i2c_base{io, fn, address, frequency, addressing},
         m_segment{segment} {}
   size_t write(const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
-    parent();
+    call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);
     return m_io->write(data);
   }
   i2c_data read() final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
-    parent();
+    call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);
     return m_io->read();
   }
   void operator()() { segment(); }
   virtual void segment() {
-    parent();
+    call_parent();
     // TODO: добавить управление выбором сегмента
     // read / write
   }
@@ -156,13 +156,13 @@ class dev_i2c : public detail::dev_i2c_base<dev_i2c_mux>,
       : dev_i2c_base{io, fn, address, frequency, addressing} {}
   size_t write(const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
-    parent();
+    call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);
     return m_io->write(data);
   }
   i2c_data read() final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
-    parent();
+    call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);
     return m_io->read();
   }

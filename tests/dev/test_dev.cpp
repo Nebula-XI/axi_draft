@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) try {
     auto i2c_axi = dev_axi_i2c::create(i2c_axi_info_opt->axi_offset());
     if (i2c_mux_is_present) {
       auto i2c_mux =
-          dev_i2c_mux::create(i2c_mux_segment, i2c_axi, i2c_mux_info.address(),
+          dev_i2c_mux::create(i2c_axi, i2c_mux_segment, i2c_mux_info.address(),
                               i2c_mux_info.frequency());
       return dev_i2c::create(i2c_axi, i2c_mux, i2c_dev_info.address(),
                              i2c_dev_info.frequency());
