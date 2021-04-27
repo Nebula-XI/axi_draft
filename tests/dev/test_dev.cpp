@@ -7,10 +7,12 @@
 
 using namespace InSys;
 
-static const std::string_view g_config{"TODO: add configuration"};
 
 int main(int argc, char *argv[]) try {
-  info_i2c_parser i2c_info_parser{g_config};
+   std::ifstream units_config_file("units_config.json");
+  std::stringstream units_config_sstream;
+  units_config_sstream << units_config_file.rdbuf();
+  info_i2c_parser i2c_info_parser{units_config_sstream.str()};
   auto i2c_mux_info_list =
       i2c_info_parser.get_info<info_i2c_parser::mux_parser>();
   auto create_i2c_dev = [&](info_i2c_dev &&i2c_dev_info) {
