@@ -1,9 +1,14 @@
 #pragma once
 
 #include <algorithm>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <cstdint>
+#include <cstdlib>
 #include <map>
 #include <optional>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -109,7 +114,16 @@ class info_base_parser {
 
  protected:
   list_type m_info_list{};
+
   virtual void parser(const std::string_view &config) = 0;
+  auto get_units_tree(const std::string_view &config) {
+    namespace pt = boost::property_tree;
+    pt::ptree units_tree{};
+    std::stringstream config_sstream{};
+    config_sstream << config;
+    pt::read_json(config_sstream, units_tree);
+    return units_tree.get_child("units");
+  }
 };
 
 }  // namespace InSys

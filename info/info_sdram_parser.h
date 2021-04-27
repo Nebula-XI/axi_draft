@@ -8,8 +8,10 @@ class info_axi_sdram_parser
     : public info_base_parser<info_list, info_axi_sdram> {
   void parser(const std::string_view &config) override {
     // TODO: add configuration parser
+    /*
     m_info_list.emplace_back("SDRAM", "DDR0", 0x00080000);
     m_info_list.emplace_back("SDRAM", "DDR1", 0x00090000);
+    */
   }
 
  public:
@@ -43,8 +45,10 @@ class info_sdram_parser final : public info_axi_sdram_parser {
  private:
   void parser(const std::string_view &config) final {
     // TODO: add configuration parser
+    /*
     axi_parser::m_info_list.emplace_back("SDRAM", "DDR0", 0x00080000);
     axi_parser::m_info_list.emplace_back("SDRAM", "DDR1", 0x00090000);
+    */
   }
 };
 

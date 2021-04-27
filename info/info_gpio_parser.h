@@ -7,9 +7,11 @@ namespace InSys {
 class info_axi_gpio_parser : public info_base_parser<info_list, info_axi_gpio> {
   void parser(const std::string_view &config) override {
     // TODO: add configuration parser
+    /*
     m_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
     m_info_list.emplace_back("GPIO", "PORT1", 0x00060000);
     m_info_list.emplace_back("GPIO", "PORT2", 0x00070000);
+    */
   }
 
  public:
@@ -42,9 +44,11 @@ class info_gpio_parser final : public info_axi_gpio_parser {
  private:
   void parser(const std::string_view &config) final {
     // TODO: add configuration parser
+    /*
     axi_parser::m_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
     axi_parser::m_info_list.emplace_back("GPIO", "PORT1", 0x00060000);
     axi_parser::m_info_list.emplace_back("GPIO", "PORT2", 0x00070000);
+    */
   }
 };
 
