@@ -43,7 +43,7 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE
       
     - name: config
-      run: cp ${{github.workspace}}/tests/info ${{github.workspace}}/build
+      run: cp ${{github.workspace}}/tests/info/units_config.json ${{github.workspace}}/build
 
     - name: Test
       working-directory: ${{github.workspace}}/build
