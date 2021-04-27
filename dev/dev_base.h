@@ -32,6 +32,17 @@ auto make_dev(args_type &&...args) {
 
 namespace detail {
 
+template <typename dev_axi_interface_type>
+class dev_axi_base : public dev_axi_interface_type {
+ public:
+  using dev_interface = typename dev_axi_interface_type::axi_shared;
+  dev_axi_base() = default;
+  dev_axi_base(uint64_t axi_offset) : m_axi_offset{axi_offset} {}
+
+ protected:
+  uint64_t m_axi_offset{};
+};
+
 template <typename dev_axi_interface_type, typename dev_interface_type,
           typename dev_parent_type>
 class dev_base : public dev_interface_type {

@@ -61,16 +61,14 @@ class dev_i2c_base : public dev_base<dev_axi_i2c_interface, dev_i2c_interface,
 
 }  // namespace detail
 
-class dev_axi_i2c final : public dev_axi_i2c_interface,
+class dev_axi_i2c final : public detail::dev_axi_base<dev_axi_i2c_interface>,
                           public detail::dev_base_creator<dev_axi_i2c> {
-  uint64_t m_axi_offset{};
-
  public:
   // TODO: Добавить управление драйвером i2c. \
            Необходимо обеспечить чтобы на каждый оффсет был один экземпляр. \
            Конфигурацию обновлять если необходимо.
   dev_axi_i2c() = default;
-  dev_axi_i2c(uint64_t axi_offset) : m_axi_offset{axi_offset} {}
+  dev_axi_i2c(uint64_t axi_offset) : dev_axi_base{axi_offset} {}
   void configure(i2c_address address, double frequency,
                  i2c_addressing addressing) noexcept final {
     // TODO: проверить какой из параметром изменился и обновить
