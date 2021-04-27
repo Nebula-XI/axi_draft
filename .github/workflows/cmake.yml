@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v2
     
     # install dependencies
-    - name: boost
+    - name: Boost
       run: sudo apt update && sudo apt install libboost-all-dev
       
     - name: Create Build Environment
@@ -42,8 +42,8 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config $BUILD_TYPE
       
-    - name: config
-      run: cp ${{github.workspace}}/tests/info/units_config.json ${{github.workspace}}/build
+    - name: Config
+      run: ls && cp -v ${{github.workspace}}/tests/info/units_config.json ${{github.workspace}}/build
 
     - name: Test
       working-directory: ${{github.workspace}}/build
