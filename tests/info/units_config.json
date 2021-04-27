@@ -1,0 +1,139 @@
+{
+    "name": "AXIinSYS",
+    "units": [
+        {
+            "name": "bram",
+            "label": "ConfigROM",
+            "offset": "0x0000",
+            "size": "2048"
+        },
+        {
+            "name": "i2c",
+            "label": "PORT0",
+            "offset": "0x1000",
+            "units": [
+                {
+                    "name": "INA218",
+                    "label": "DD2",
+                    "addr": "0x32",
+                    "freq": "100000"
+                },
+                {
+                    "name": "INA218",
+                    "label": "DD5",
+                    "addr": "0x48",
+                    "freq": "100000"
+                },
+                {
+                    "name": "LTC2991",
+                    "label": "D13",
+                    "addr": "0x53",
+                    "freq": "400000"
+                },
+                {
+                    "name": "LTC4306",
+                    "label": "D105",
+                    "addr": "0x53",
+                    "freq": "400000",
+                    "segs": "4",
+                    "units": [
+                        {
+                            "name": "INA218",
+                            "label": "D85",
+                            "addr": "0x78",
+                            "freq": "100000",
+                            "seg": "0"
+                        },
+                        {
+                            "name": "INA219",
+                            "label": "D86",
+                            "addr": "0x88",
+                            "freq": "100000",
+                            "seg": "2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "i2c",
+            "label": "PORT1",
+            "offset": "0xC000",
+            "units": [
+                {
+                    "name": "INA218",
+                    "label": "DD22",
+                    "addr": "0x32",
+                    "freq": "100000"
+                },
+                {
+                    "name": "INA218",
+                    "label": "DD55",
+                    "addr": "0x48",
+                    "freq": "100000"
+                },
+                {
+                    "name": "LTC2991",
+                    "label": "D133",
+                    "addr": "0x53",
+                    "freq": "400000"
+                },
+                {
+                    "name": "LTC4306",
+                    "label": "D13",
+                    "addr": "0x53",
+                    "freq": "400000",
+                    "segs": "8",
+                    "units": [
+                        {
+                            "name": "INA218",
+                            "label": "D95",
+                            "addr": "0x78",
+                            "freq": "100000",
+                            "seg": "0"
+                        },
+                        {
+                            "name": "INA219",
+                            "label": "D96",
+                            "addr": "0x88",
+                            "freq": "100000",
+                            "seg": "7"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "spi",
+            "label": "PORT0",
+            "offset": "0x2000",
+            "units": [
+                {
+                    "name": "LMX2594",
+                    "label": "D161",
+                    "freq": "20e6"
+                },
+                {
+                    "name": "LTC6953",
+                    "label": "D142",
+                    "freq": "10e6"
+                },
+                {
+                    "name": "LMX2594",
+                    "label": "D162",
+                    "freq": "20e6"
+                }
+            ]
+        },
+        {
+            "name": "gpio",
+            "label": "PORT0",
+            "offset": "0x3000"
+        },
+        {
+            "name": "gpio",
+            "label": "PORT1",
+            "offset": "0x4C00"
+        }
+    ]
+}
