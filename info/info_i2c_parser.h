@@ -7,26 +7,27 @@ namespace InSys {
 // FIXME: черновой вариант, нужен рефакторинг
 
 class i2c_units_parser_json : public units_parser_json {
-  static constexpr auto i2c{"i2c"};
-  static constexpr auto segments{"segs"};
-  static constexpr auto segment{"seg"};
-  static constexpr auto address{"addr"};
-  static constexpr auto frequency{"freq"};
+  static constexpr auto k_i2c{"i2c"};
+  static constexpr auto k_segments_num{"segs"};
+  static constexpr auto k_segment{"seg"};
+  static constexpr auto k_address{"addr"};
+  static constexpr auto k_frequency{"freq"};
 
  public:
   using units_parser_json::units_parser_json;
-  constexpr auto unit_name() const { return i2c; }
+  constexpr auto unit_name() const { return k_i2c; }
   auto has_segments() const {
-    return m_units_tree.get_optional<uint32_t>(segments).has_value();
+    return m_units_tree.get_optional<uint32_t>(k_segments_num).has_value();
   }
-  auto get_segments_num() const { return m_units_tree.get<uint32_t>(segments); }
-  auto get_segment() const { return m_units_tree.get<uint32_t>(segment); }
+  auto get_segments_num() const {
+    return m_units_tree.get<uint32_t>(k_segments_num);
+  }
+  auto get_segment() const { return m_units_tree.get<uint32_t>(k_segment); }
   auto get_address() const {
-    return std::strtol(
-        m_units_tree.get<std::string>(i2c_units_parser_json::address).c_str(),
-        nullptr, 16);
+    return std::strtol(m_units_tree.get<std::string>(k_address).c_str(),
+                       nullptr, 16);
   }
-  auto get_frequency() const { return m_units_tree.get<double>(frequency); }
+  auto get_frequency() const { return m_units_tree.get<double>(k_frequency); }
 };
 
 class info_axi_i2c_parser : public info_base_parser<info_list, info_axi_i2c> {

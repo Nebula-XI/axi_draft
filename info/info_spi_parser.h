@@ -4,6 +4,13 @@
 
 namespace InSys {
 
+class spi_units_parser_json : public units_parser_json {
+  static constexpr auto k_spi{"spi"};
+
+ public:
+  using units_parser_json::units_parser_json;
+  constexpr auto unit_name() const { return k_spi; }
+};
 class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
   void parser(const units_tree_type &units_tree) override {
     // TODO: add configuration parser
@@ -14,7 +21,7 @@ class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
     */
   }
   void parser(const std::string_view &config) override {
-    parser(units_parser_json{config}.get_units());
+    parser(spi_units_parser_json{config}.get_units());
   }
 
  public:
