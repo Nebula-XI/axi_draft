@@ -10,6 +10,10 @@ namespace detail {
 
 struct info_i2c_parser_keys {
   static constexpr auto i2c{"i2c"};
+  static constexpr auto segments{"segs"};
+  static constexpr auto segment{"seg"};
+  static constexpr auto address{"addr"};
+  static constexpr auto frequency{"freq"};
 };
 
 }  // namespace detail
@@ -17,12 +21,14 @@ struct info_i2c_parser_keys {
 class info_axi_i2c_parser : public info_base_parser<info_list, info_axi_i2c> {
  protected:
   void parser(const units_tree_type &units_tree) override {
+    using namespace detail;
     for (auto &units : units_tree) {
-      auto name = units.second.get<std::string>("name");
-      auto label = units.second.get<std::string>("label");
-      auto offset = std::strtol(units.second.get<std::string>("offset").c_str(),
-                                nullptr, 16);
-      if (name == detail::info_i2c_parser_keys::i2c) {
+      auto name = units.second.get<std::string>(info_parser_keys::name);
+      auto label = units.second.get<std::string>(info_parser_keys::label);
+      auto offset = std::strtol(
+          units.second.get<std::string>(info_parser_keys::offset).c_str(),
+          nullptr, 16);
+      if (name == info_i2c_parser_keys::i2c) {
         m_info_list.emplace_back(name, label, offset);
       }
     }
@@ -41,24 +47,27 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
   void parser(const units_tree_type &units_tree) override {
     using namespace detail;
     for (auto &units : units_tree) {
-      auto parent_name =
-          units.second.get<std::string>(detail::info_parser_keys::name);
+      auto parent_name = units.second.get<std::string>(info_parser_keys::name);
       auto parent_label =
-          units.second.get<std::string>(detail::info_parser_keys::label);
+          units.second.get<std::string>(info_parser_keys::label);
       auto paren_offset = std::strtol(
-          units.second.get<std::string>("offset").c_str(), nullptr, 16);
+          units.second.get<std::string>(info_parser_keys::offset).c_str(),
+          nullptr, 16);
       if (parent_name == info_i2c_parser_keys::i2c) {
-        auto i2c_tree = units.second.get_child(detail::info_parser_keys::units);
+        auto i2c_tree = units.second.get_child(info_parser_keys::units);
         for (auto &i2c : i2c_tree) {
-          auto segments = i2c.second.get_optional<uint32_t>("segs");
+          auto segments =
+              i2c.second.get_optional<uint32_t>(info_i2c_parser_keys::segments);
           if (!segments) {
             continue;
           }
-          auto name = i2c.second.get<std::string>("name");
-          auto label = i2c.second.get<std::string>("label");
+          auto name = i2c.second.get<std::string>(info_parser_keys::name);
+          auto label = i2c.second.get<std::string>(info_parser_keys::label);
           auto addr = uint32_t(std::strtol(
-              i2c.second.get<std::string>("addr").c_str(), nullptr, 16));
-          auto freq = i2c.second.get<double>("freq");
+              i2c.second.get<std::string>(info_i2c_parser_keys::address)
+                  .c_str(),
+              nullptr, 16));
+          auto freq = i2c.second.get<double>(info_i2c_parser_keys::frequency);
           m_info_list.emplace_back(name, label, addr, freq, *segments,
                                    make_info_uid{}(parent_name, parent_label));
         }
@@ -77,31 +86,42 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
 class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
  protected:
   void parser(const units_tree_type &units_tree) override {
+    using namespace detail;
     for (auto &units : units_tree) {
-      auto parent_name = units.second.get<std::string>("name");
-      auto parent_label = units.second.get<std::string>("label");
+      auto parent_name = units.second.get<std::string>(info_parser_keys::name);
+      auto parent_label =
+          units.second.get<std::string>(info_parser_keys::label);
       auto paren_offset = std::strtol(
-          units.second.get<std::string>("offset").c_str(), nullptr, 16);
+          units.second.get<std::string>(info_parser_keys::offset).c_str(),
+          nullptr, 16);
       if (parent_name == "i2c") {
-        auto i2c_tree = units.second.get_child(detail::info_parser_keys::units);
+        auto i2c_tree = units.second.get_child(info_parser_keys::units);
         for (auto &i2c : i2c_tree) {
-          auto name = i2c.second.get<std::string>("name");
-          auto label = i2c.second.get<std::string>("label");
-          auto addr = std::strtol(i2c.second.get<std::string>("addr").c_str(),
-                                  nullptr, 16);
-          auto freq = i2c.second.get<double>("freq");
-          auto segments = i2c.second.get_optional<uint32_t>("segs");
+          auto name = i2c.second.get<std::string>(info_parser_keys::name);
+          auto label = i2c.second.get<std::string>(info_parser_keys::label);
+          auto addr = std::strtol(
+              i2c.second.get<std::string>(info_i2c_parser_keys::address)
+                  .c_str(),
+              nullptr, 16);
+          auto freq = i2c.second.get<double>(info_i2c_parser_keys::frequency);
+          auto segments =
+              i2c.second.get_optional<uint32_t>(info_i2c_parser_keys::segments);
           if (segments.has_value()) {
-            auto i2c_subtree =
-                i2c.second.get_child(detail::info_parser_keys::units);
+            auto i2c_subtree = i2c.second.get_child(info_parser_keys::units);
             for (auto &i2c_sub : i2c_subtree) {
               // FIXME: нужна рекурсивность
-              auto child_name = i2c_sub.second.get<std::string>("name");
-              auto child_label = i2c_sub.second.get<std::string>("label");
+              auto child_name =
+                  i2c_sub.second.get<std::string>(info_parser_keys::name);
+              auto child_label =
+                  i2c_sub.second.get<std::string>(info_parser_keys::label);
               auto child_addr = std::strtol(
-                  i2c_sub.second.get<std::string>("addr").c_str(), nullptr, 16);
-              auto child_freq = i2c_sub.second.get<double>("freq");
-              auto segment = i2c_sub.second.get<uint32_t>("seg");
+                  i2c_sub.second.get<std::string>(info_i2c_parser_keys::address)
+                      .c_str(),
+                  nullptr, 16);
+              auto child_freq =
+                  i2c_sub.second.get<double>(info_i2c_parser_keys::frequency);
+              auto segment =
+                  i2c_sub.second.get<uint32_t>(info_i2c_parser_keys::segment);
               m_info_list.emplace_back(
                   child_name, child_label, child_addr, child_freq,
                   make_info_uid{}(name, label, std::to_string(segment)));
