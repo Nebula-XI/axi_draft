@@ -16,7 +16,7 @@ include_directories(
 )
 add_executable(${PROJECT_NAME} test_dev.cpp)
 
-find_package(Boost 1.65 COMPONENTS json)
+find_package(Boost 1.65 REQUIRED)
 
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})

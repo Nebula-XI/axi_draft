@@ -14,7 +14,7 @@ class info_axi_sdram_parser
     */
   }
   void parser(const std::string_view &config) override {
-    parser(get_units_tree(config).get_child(detail::info_parser_keys::units));
+    parser(units_parser_json{config}.get_units());
   }
 
  public:

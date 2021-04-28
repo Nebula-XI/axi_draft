@@ -120,35 +120,31 @@ class info_base_parser {
   virtual void parser(const units_tree_type &units_tree) = 0;
 };
 
-inline auto get_units_tree(const std::string_view &config) {
-  units_tree_type units_tree{};
-  std::stringstream units_config{};
-  units_config << config;
-  boost::property_tree::read_json(units_config, units_tree);
-  return units_tree;
-}
-
-namespace detail {
-
-class info_parser_keys {
- public:
-  // TODO: переместить в приват
+class units_parser_json {
   static constexpr auto units{"units"};
   static constexpr auto name{"name"};
   static constexpr auto label{"label"};
   static constexpr auto offset{"offset"};
 
-  static auto get_name(const units_tree_type &tree) {
-    return tree.get<std::string>(name);
+ protected:
+  units_tree_type m_units_tree{};
+
+ public:
+  units_parser_json(const std::string_view &config) {
+    std::stringstream units_config{};
+    units_config << config;
+    boost::property_tree::read_json(units_config, m_units_tree);
   }
-  static auto get_label(const units_tree_type &tree) {
-    return tree.get<std::string>(label);
-  }
-  static auto get_offset(const units_tree_type &tree) {
-    return std::strtol(tree.get<std::string>(offset).c_str(), nullptr, 16);
+  template <typename tree_type = units_tree_type>
+  units_parser_json(tree_type &&units_tree)
+      : m_units_tree{std::forward<tree_type>(units_tree)} {}
+  auto get_units() const { return m_units_tree.get_child(units); }
+  auto get_name() const { return m_units_tree.get<std::string>(name); }
+  auto get_label() const { return m_units_tree.get<std::string>(label); }
+  auto get_offset() const {
+    return std::strtol(m_units_tree.get<std::string>(offset).c_str(), nullptr,
+                       16);
   }
 };
-
-}  // namespace detail
 
 }  // namespace InSys

@@ -14,7 +14,7 @@ class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
     */
   }
   void parser(const std::string_view &config) override {
-    parser(get_units_tree(config).get_child(detail::info_parser_keys::units));
+    parser(units_parser_json{config}.get_units());
   }
 
  public:
@@ -35,7 +35,7 @@ class info_spi_dev_parser : public info_base_parser<info_list, info_spi_dev> {
     */
   }
   void parser(const std::string_view &config) override {
-    parser(get_units_tree(config).get_child(detail::info_parser_keys::units));
+    parser(units_parser_json{config}.get_units());
   }
 
  public:
