@@ -129,4 +129,15 @@ inline auto get_units_tree(const std::string_view &config) {
   return units_tree;
 }
 
+namespace detail {
+
+struct info_parser_keys {
+  static constexpr auto units{"units"};
+  static constexpr auto name{"name"};
+  static constexpr auto label{"label"};
+  static constexpr auto offset{"offset"};
+};
+
+}  // namespace detail
+
 }  // namespace InSys

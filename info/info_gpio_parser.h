@@ -14,7 +14,7 @@ class info_axi_gpio_parser : public info_base_parser<info_list, info_axi_gpio> {
     */
   }
   void parser(const std::string_view &config) override {
-    parser(get_units_tree(config).get_child("units"));
+    parser(get_units_tree(config).get_child(detail::info_parser_keys::units));
   }
 
  public:

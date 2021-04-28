@@ -7,9 +7,8 @@
 
 using namespace InSys;
 
-
 int main(int argc, char *argv[]) try {
-   std::ifstream units_config_file("units_config.json");
+  std::ifstream units_config_file((argc > 1) ? argv[1] : "units_config.json");
   std::stringstream units_config;
   units_config << units_config_file.rdbuf();
   info_i2c_parser i2c_info_parser{units_config.str()};

@@ -1,11 +1,10 @@
-
 #include "test_info.h"
 
 using namespace InSys;
 using namespace std::string_literals;
 
 int main(int argc, char *argv[]) try {
-  std::ifstream units_config_file("./units_config.json");
+  std::ifstream units_config_file((argc > 1) ? argv[1] : "units_config.json");
   std::stringstream units_config;
   units_config << units_config_file.rdbuf();
   info_axi_i2c_parser info_axi_i2c_parser{units_config.str()};
