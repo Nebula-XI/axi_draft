@@ -8,7 +8,9 @@ namespace InSys {
 
 namespace detail {
 
-struct info_i2c_parser_keys {
+class info_i2c_parser_keys : public info_parser_keys {
+ public:
+  // TODO: переместить в приват
   static constexpr auto i2c{"i2c"};
   static constexpr auto segments{"segs"};
   static constexpr auto segment{"seg"};
@@ -23,18 +25,17 @@ class info_axi_i2c_parser : public info_base_parser<info_list, info_axi_i2c> {
   void parser(const units_tree_type &units_tree) override {
     using namespace detail;
     for (auto &units : units_tree) {
-      auto name = units.second.get<std::string>(info_parser_keys::name);
-      auto label = units.second.get<std::string>(info_parser_keys::label);
-      auto offset = std::strtol(
-          units.second.get<std::string>(info_parser_keys::offset).c_str(),
-          nullptr, 16);
+      auto name = units.second.get<std::string>(info_i2c_parser_keys::name);
+      auto label = units.second.get<std::string>(info_i2c_parser_keys::label);
+      auto offset = info_i2c_parser_keys::get_offset(units.second);
       if (name == info_i2c_parser_keys::i2c) {
         m_info_list.emplace_back(name, label, offset);
       }
     }
   }
   void parser(const std::string_view &config) override {
-    parser(get_units_tree(config).get_child(detail::info_parser_keys::units));
+    parser(
+        get_units_tree(config).get_child(detail::info_i2c_parser_keys::units));
   }
 
  public:
@@ -47,22 +48,21 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
   void parser(const units_tree_type &units_tree) override {
     using namespace detail;
     for (auto &units : units_tree) {
-      auto parent_name = units.second.get<std::string>(info_parser_keys::name);
+      auto parent_name =
+          units.second.get<std::string>(info_i2c_parser_keys::name);
       auto parent_label =
-          units.second.get<std::string>(info_parser_keys::label);
-      auto paren_offset = std::strtol(
-          units.second.get<std::string>(info_parser_keys::offset).c_str(),
-          nullptr, 16);
+          units.second.get<std::string>(info_i2c_parser_keys::label);
+      auto paren_offset = info_i2c_parser_keys::get_offset(units.second);
       if (parent_name == info_i2c_parser_keys::i2c) {
-        auto i2c_tree = units.second.get_child(info_parser_keys::units);
+        auto i2c_tree = units.second.get_child(info_i2c_parser_keys::units);
         for (auto &i2c : i2c_tree) {
           auto segments =
               i2c.second.get_optional<uint32_t>(info_i2c_parser_keys::segments);
           if (!segments) {
             continue;
           }
-          auto name = i2c.second.get<std::string>(info_parser_keys::name);
-          auto label = i2c.second.get<std::string>(info_parser_keys::label);
+          auto name = i2c.second.get<std::string>(info_i2c_parser_keys::name);
+          auto label = i2c.second.get<std::string>(info_i2c_parser_keys::label);
           auto addr = uint32_t(std::strtol(
               i2c.second.get<std::string>(info_i2c_parser_keys::address)
                   .c_str(),
@@ -75,7 +75,8 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
     }
   }
   void parser(const std::string_view &config) override {
-    parser(get_units_tree(config).get_child(detail::info_parser_keys::units));
+    parser(
+        get_units_tree(config).get_child(detail::info_i2c_parser_keys::units));
   }
 
  public:
@@ -88,17 +89,15 @@ class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
   void parser(const units_tree_type &units_tree) override {
     using namespace detail;
     for (auto &units : units_tree) {
-      auto parent_name = units.second.get<std::string>(info_parser_keys::name);
+      auto parent_name = info_i2c_parser_keys::get_name(units.second);
       auto parent_label =
-          units.second.get<std::string>(info_parser_keys::label);
-      auto paren_offset = std::strtol(
-          units.second.get<std::string>(info_parser_keys::offset).c_str(),
-          nullptr, 16);
-      if (parent_name == "i2c") {
-        auto i2c_tree = units.second.get_child(info_parser_keys::units);
+          units.second.get<std::string>(info_i2c_parser_keys::label);
+      auto paren_offset = info_i2c_parser_keys::get_offset(units.second);
+      if (parent_name == info_i2c_parser_keys::i2c) {
+        auto i2c_tree = units.second.get_child(info_i2c_parser_keys::units);
         for (auto &i2c : i2c_tree) {
-          auto name = i2c.second.get<std::string>(info_parser_keys::name);
-          auto label = i2c.second.get<std::string>(info_parser_keys::label);
+          auto name = info_i2c_parser_keys::get_name(i2c.second);
+          auto label = i2c.second.get<std::string>(info_i2c_parser_keys::label);
           auto addr = std::strtol(
               i2c.second.get<std::string>(info_i2c_parser_keys::address)
                   .c_str(),
@@ -107,13 +106,14 @@ class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
           auto segments =
               i2c.second.get_optional<uint32_t>(info_i2c_parser_keys::segments);
           if (segments.has_value()) {
-            auto i2c_subtree = i2c.second.get_child(info_parser_keys::units);
+            auto i2c_subtree =
+                i2c.second.get_child(info_i2c_parser_keys::units);
+
             for (auto &i2c_sub : i2c_subtree) {
               // FIXME: нужна рекурсивность
-              auto child_name =
-                  i2c_sub.second.get<std::string>(info_parser_keys::name);
+              auto child_name = info_i2c_parser_keys::get_name(i2c_sub.second);
               auto child_label =
-                  i2c_sub.second.get<std::string>(info_parser_keys::label);
+                  i2c_sub.second.get<std::string>(info_i2c_parser_keys::label);
               auto child_addr = std::strtol(
                   i2c_sub.second.get<std::string>(info_i2c_parser_keys::address)
                       .c_str(),
@@ -136,7 +136,8 @@ class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
     }
   }
   void parser(const std::string_view &config) override {
-    parser(get_units_tree(config).get_child(detail::info_parser_keys::units));
+    parser(
+        get_units_tree(config).get_child(detail::info_i2c_parser_keys::units));
   }
 
  public:
@@ -174,7 +175,7 @@ class info_i2c_parser final : public info_axi_i2c_parser,
  private:
   void parser(const std::string_view &config) final {
     auto units_tree =
-        get_units_tree(config).get_child(detail::info_parser_keys::units);
+        get_units_tree(config).get_child(detail::info_i2c_parser_keys::units);
     axi_parser::parser(units_tree);
     mux_parser::parser(units_tree);
     dev_parser::parser(units_tree);

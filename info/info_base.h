@@ -76,6 +76,8 @@ class info_axi_base : public info_base {
 template <typename info_type>
 using info_list = std::vector<info_type>;
 
+using units_tree_type = boost::property_tree::ptree;
+
 template <template <typename> typename info_list, typename info_type>
 class info_base_parser {
  public:
@@ -114,15 +116,12 @@ class info_base_parser {
 
  protected:
   list_type m_info_list{};
-  using units_tree_type = boost::property_tree::ptree;
-
   virtual void parser(const std::string_view &config) = 0;
   virtual void parser(const units_tree_type &units_tree) = 0;
 };
 
 inline auto get_units_tree(const std::string_view &config) {
-  using namespace boost::property_tree;
-  ptree units_tree{};
+  units_tree_type units_tree{};
   std::stringstream units_config{};
   units_config << config;
   boost::property_tree::read_json(units_config, units_tree);
@@ -131,11 +130,23 @@ inline auto get_units_tree(const std::string_view &config) {
 
 namespace detail {
 
-struct info_parser_keys {
+class info_parser_keys {
+ public:
+  // TODO: переместить в приват
   static constexpr auto units{"units"};
   static constexpr auto name{"name"};
   static constexpr auto label{"label"};
   static constexpr auto offset{"offset"};
+
+  static auto get_name(const units_tree_type &tree) {
+    return tree.get<std::string>(name);
+  }
+  static auto get_label(const units_tree_type &tree) {
+    return tree.get<std::string>(label);
+  }
+  static auto get_offset(const units_tree_type &tree) {
+    return std::strtol(tree.get<std::string>(offset).c_str(), nullptr, 16);
+  }
 };
 
 }  // namespace detail
