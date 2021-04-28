@@ -8,8 +8,7 @@ namespace InSys {
 
 class info_axi_i2c_parser : public info_base_parser<info_list, info_axi_i2c> {
  protected:
-  void parser(const std::string_view &config) override {
-    auto units_tree = get_units_tree(config);
+  void parser(const units_tree_type &units_tree) override {
     for (auto &units : units_tree) {
       auto name = units.second.get<std::string>("name");
       auto label = units.second.get<std::string>("label");
@@ -20,6 +19,9 @@ class info_axi_i2c_parser : public info_base_parser<info_list, info_axi_i2c> {
       }
     }
   }
+  void parser(const std::string_view &config) override {
+    parser(get_units_tree(config).get_child("units"));
+  }
 
  public:
   info_axi_i2c_parser() = default;
@@ -28,8 +30,7 @@ class info_axi_i2c_parser : public info_base_parser<info_list, info_axi_i2c> {
 
 class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
  protected:
-  void parser(const std::string_view &config) override {
-    auto units_tree = get_units_tree(config);
+  void parser(const units_tree_type &units_tree) override {
     for (auto &units : units_tree) {
       auto parent_name = units.second.get<std::string>("name");
       auto parent_label = units.second.get<std::string>("label");
@@ -53,6 +54,9 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
       }
     }
   }
+  void parser(const std::string_view &config) override {
+    parser(get_units_tree(config).get_child("units"));
+  }
 
  public:
   info_i2c_mux_parser() = default;
@@ -61,8 +65,7 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
 
 class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
  protected:
-  void parser(const std::string_view &config) override {
-    auto units_tree = get_units_tree(config);
+  void parser(const units_tree_type &units_tree) override {
     for (auto &units : units_tree) {
       auto parent_name = units.second.get<std::string>("name");
       auto parent_label = units.second.get<std::string>("label");
@@ -100,6 +103,9 @@ class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
       }
     }
   }
+  void parser(const std::string_view &config) override {
+    parser(get_units_tree(config).get_child("units"));
+  }
 
  public:
   info_i2c_dev_parser() = default;
@@ -135,9 +141,10 @@ class info_i2c_parser final : public info_axi_i2c_parser,
 
  private:
   void parser(const std::string_view &config) final {
-    axi_parser::parser(config);
-    mux_parser::parser(config);
-    dev_parser::parser(config);
+    auto units_tree = get_units_tree(config).get_child("units");
+    axi_parser::parser(units_tree);
+    mux_parser::parser(units_tree);
+    dev_parser::parser(units_tree);
   }
 };
 

@@ -114,16 +114,19 @@ class info_base_parser {
 
  protected:
   list_type m_info_list{};
+  using units_tree_type = boost::property_tree::ptree;
 
   virtual void parser(const std::string_view &config) = 0;
-  auto get_units_tree(const std::string_view &config) {
-    namespace pt = boost::property_tree;
-    pt::ptree units_tree{};
-    std::stringstream config_sstream{};
-    config_sstream << config;
-    pt::read_json(config_sstream, units_tree);
-    return units_tree.get_child("units");
-  }
+  virtual void parser(const units_tree_type &units_tree) = 0;
 };
+
+inline auto get_units_tree(const std::string_view &config) {
+  using namespace boost::property_tree;
+  ptree units_tree{};
+  std::stringstream units_config{};
+  units_config << config;
+  boost::property_tree::read_json(units_config, units_tree);
+  return units_tree;
+}
 
 }  // namespace InSys

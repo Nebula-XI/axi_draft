@@ -10,9 +10,9 @@ using namespace InSys;
 
 int main(int argc, char *argv[]) try {
    std::ifstream units_config_file("units_config.json");
-  std::stringstream units_config_sstream;
-  units_config_sstream << units_config_file.rdbuf();
-  info_i2c_parser i2c_info_parser{units_config_sstream.str()};
+  std::stringstream units_config;
+  units_config << units_config_file.rdbuf();
+  info_i2c_parser i2c_info_parser{units_config.str()};
   auto i2c_mux_info_list =
       i2c_info_parser.get_info<info_i2c_parser::mux_parser>();
   auto create_i2c_dev = [&](info_i2c_dev &&i2c_dev_info) {

@@ -5,13 +5,16 @@
 namespace InSys {
 
 class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
-  void parser(const std::string_view &config) override {
+  void parser(const units_tree_type &units_tree) override {
     // TODO: add configuration parser
     /*
     m_info_list.emplace_back("SPI", "PORT0", 0x00010000);
     m_info_list.emplace_back("SPI", "PORT1", 0x00020000);
     m_info_list.emplace_back("SPI", "PORT2", 0x00030000);
     */
+  }
+  void parser(const std::string_view &config) override {
+    parser(get_units_tree(config).get_child("units"));
   }
 
  public:
@@ -20,7 +23,7 @@ class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
 };
 
 class info_spi_dev_parser : public info_base_parser<info_list, info_spi_dev> {
-  void parser(const std::string_view &config) override {
+  void parser(const units_tree_type &units_tree) override {
     // TODO: add configuration parser
     /*
     m_info_list.emplace_back("LMX2594", "DD1", 0, 10_MHz,
@@ -30,6 +33,9 @@ class info_spi_dev_parser : public info_base_parser<info_list, info_spi_dev> {
     m_info_list.emplace_back("LMX2594", "DD3", 2, 10_MHz,
                              make_info_uid{}("SPI", "PORT2"));
     */
+  }
+  void parser(const std::string_view &config) override {
+    parser(get_units_tree(config).get_child("units"));
   }
 
  public:

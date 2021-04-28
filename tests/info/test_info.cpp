@@ -6,24 +6,24 @@ using namespace std::string_literals;
 
 int main(int argc, char *argv[]) try {
   std::ifstream units_config_file("units_config.json");
-  std::stringstream units_config_sstream;
-  units_config_sstream << units_config_file.rdbuf();
-  info_axi_i2c_parser info_axi_i2c_parser{units_config_sstream.str()};
+  std::stringstream units_config;
+  units_config << units_config_file.rdbuf();
+  info_axi_i2c_parser info_axi_i2c_parser{units_config.str()};
   auto info_axi_i2c_list = info_axi_i2c_parser.get_info();
   print_info_list<info_axi_i2c_parser::list_type>(
       "EXAMPLE [1] - get info  axi-i2c units from custom parser",
       info_axi_i2c_list);
-  info_i2c_mux_parser info_i2c_mux_parser{units_config_sstream.str()};
+  info_i2c_mux_parser info_i2c_mux_parser{units_config.str()};
   auto info_i2c_mux_list = info_i2c_mux_parser.get_info();
   print_info_list<info_i2c_mux_parser::list_type>(
       "EXAMPLE [2] - get info i2c-mux units from custom parser",
       info_i2c_mux_list);
-  info_i2c_dev_parser info_i2c_dev_parser{units_config_sstream.str()};
+  info_i2c_dev_parser info_i2c_dev_parser{units_config.str()};
   auto info_i2c_dev_list = info_i2c_dev_parser.get_info();
   print_info_list<info_i2c_dev_parser::list_type>(
       "EXAMPLE [3] - get info i2c-dev units from custom parser",
       info_i2c_dev_list);
-  info_i2c_parser info_i2c_parser{units_config_sstream.str()};
+  info_i2c_parser info_i2c_parser{units_config.str()};
   info_axi_i2c_list = info_i2c_parser.get_info<info_i2c_parser::axi_parser>();
   print_info_list<info_axi_i2c_parser::list_type>(
       "EXAMPLE [4] - get info axi-i2c units from common parser",
@@ -83,17 +83,17 @@ int main(int argc, char *argv[]) try {
   print_info(
       "EXAMPLE [16] - get info by label for i2c-dev units from common parser",
       info_i2c_dev_by_label);
-  info_axi_spi_parser info_axi_spi_parser{units_config_sstream.str()};
+  info_axi_spi_parser info_axi_spi_parser{units_config.str()};
   auto info_axi_spi_list = info_axi_spi_parser.get_info();
   print_info_list<info_axi_spi_parser::list_type>(
       "EXAMPLE [17] - get info axi-spi units from custom parser",
       info_axi_spi_list);
-  info_spi_dev_parser info_spi_dev_parser{units_config_sstream.str()};
+  info_spi_dev_parser info_spi_dev_parser{units_config.str()};
   auto info_spi_dev_list = info_spi_dev_parser.get_info();
   print_info_list<info_spi_dev_parser::list_type>(
       "EXAMPLE [18] - get info api-dev units from custom parser",
       info_spi_dev_list);
-  info_spi_parser info_spi_parser{units_config_sstream.str()};
+  info_spi_parser info_spi_parser{units_config.str()};
   info_axi_spi_list = info_spi_parser.get_info<info_spi_parser::axi_parser>();
   print_info_list<info_axi_spi_parser::list_type>(
       "EXAMPLE [19] - get info axi-spi units from common parser",
@@ -102,23 +102,23 @@ int main(int argc, char *argv[]) try {
   print_info_list<info_spi_dev_parser::list_type>(
       "EXAMPLE [20] - get info spi-dev units from common parser",
       info_spi_dev_list);
-  info_axi_gpio_parser info_axi_gpio_parser{units_config_sstream.str()};
+  info_axi_gpio_parser info_axi_gpio_parser{units_config.str()};
   auto info_axi_gpio_list = info_axi_gpio_parser.get_info();
   print_info_list<info_axi_gpio_parser::list_type>(
       "EXAMPLE [21] - get info axi-gpio units from custom parser",
       info_axi_gpio_list);
-  info_gpio_parser info_gpio_parser{units_config_sstream.str()};
+  info_gpio_parser info_gpio_parser{units_config.str()};
   info_axi_gpio_list =
       info_gpio_parser.get_info<info_gpio_parser::axi_parser>();
   print_info_list<info_axi_gpio_parser::list_type>(
       "EXAMPLE [22] - get info axi-gpio units from common parser",
       info_axi_gpio_list);
-  info_axi_sdram_parser info_axi_sdram_parser{units_config_sstream.str()};
+  info_axi_sdram_parser info_axi_sdram_parser{units_config.str()};
   auto info_axi_sdram_list = info_axi_sdram_parser.get_info();
   print_info_list<info_axi_sdram_parser::list_type>(
       "EXAMPLE [23] - get info axi-sdram units from custom parser",
       info_axi_sdram_list);
-  info_sdram_parser info_sdram_parser{units_config_sstream.str()};
+  info_sdram_parser info_sdram_parser{units_config.str()};
   info_axi_sdram_list =
       info_sdram_parser.get_info<info_sdram_parser::axi_parser>();
   print_info_list<info_axi_sdram_parser::list_type>(

@@ -5,13 +5,16 @@
 namespace InSys {
 
 class info_axi_gpio_parser : public info_base_parser<info_list, info_axi_gpio> {
-  void parser(const std::string_view &config) override {
+  void parser(const units_tree_type &units_tree) override {
     // TODO: add configuration parser
     /*
     m_info_list.emplace_back("GPIO", "PORT0", 0x00050000);
     m_info_list.emplace_back("GPIO", "PORT1", 0x00060000);
     m_info_list.emplace_back("GPIO", "PORT2", 0x00070000);
     */
+  }
+  void parser(const std::string_view &config) override {
+    parser(get_units_tree(config).get_child("units"));
   }
 
  public:
