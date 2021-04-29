@@ -6,5 +6,6 @@ project(axi_draft
 
 enable_testing()
 
-add_subdirectory(tests/info)
-add_subdirectory(tests/dev)
+#add_subdirectory(tests/info)
+#add_subdirectory(tests/dev)
+add_subdirectory(tests/dev_axi)

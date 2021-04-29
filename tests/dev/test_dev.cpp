@@ -57,12 +57,14 @@ int main(int argc, char *argv[]) try {
     if (!i2c_dev) {
       continue;
     }
-    auto data = i2c_dev->read();
+    i2c_data data;
+    auto readed = i2c_dev->read(data, 1);
     auto writed = i2c_dev->write({});
   }
   auto i2c_axi = dev_axi_i2c::create(0);
   auto ic_ina21x{chips::ina21x::create(i2c_axi, 0x49, 100._kHz)};
-  auto data = ic_ina21x->read();
+  i2c_data data;
+  auto readed = ic_ina21x->read(data,1);
   auto writed = ic_ina21x->write({});
   return EXIT_SUCCESS;
 } catch (const std::exception &e) {

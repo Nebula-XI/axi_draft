@@ -99,10 +99,14 @@ class dev_axi_i2c final : public detail::dev_axi_base<dev_axi_i2c_interface>,
     // добавить запись i2c
     return {};
   }
-  i2c_data read() final {
+  size_t read(i2c_data& data, const size_t N) final {
     // добавить чтение i2c
     return {};
   }
+  private:
+    i2c_address m_address{};
+    double m_frequency{};
+    i2c_addressing m_addressing{};
 };
 
 class dev_i2c_mux : public detail::dev_i2c_base<dev_i2c_mux>,
@@ -126,11 +130,11 @@ class dev_i2c_mux : public detail::dev_i2c_base<dev_i2c_mux>,
     m_io->configure(m_address, m_frequency, m_addressing);
     return m_io->write(data);
   }
-  i2c_data read() final {
+  size_t read(i2c_data& data, const size_t N) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);
-    return m_io->read();
+    return m_io->read(data, N);
   }
   void operator()() { segment(); }
   virtual void segment() {
@@ -158,11 +162,11 @@ class dev_i2c : public detail::dev_i2c_base<dev_i2c_mux>,
     m_io->configure(m_address, m_frequency, m_addressing);
     return m_io->write(data);
   }
-  i2c_data read() final {
+  size_t read(i2c_data& data, const size_t N) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);
-    return m_io->read();
+    return m_io->read(data, N);
   }
 };
 

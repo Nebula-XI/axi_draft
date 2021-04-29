@@ -14,7 +14,7 @@ template <typename dev_interface_type>
 struct dev_interface {
   using dev_shared = typename std::shared_ptr<dev_interface_type>;
   virtual size_t write(const std::vector<uint8_t> &) = 0;
-  virtual std::vector<uint8_t> read() = 0;
+  virtual size_t read(std::vector<uint8_t>&, const size_t N) = 0;
   virtual ~dev_interface() noexcept = default;
 };
 
