@@ -16,7 +16,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(${PROJECT_NAME} test_info.cpp)
 
-find_package(Boost 1.72 REQUIRED)
+find_package(Boost 1.65 REQUIRED)
 
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 

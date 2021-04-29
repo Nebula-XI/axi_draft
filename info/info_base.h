@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
 #include <cstdint>
 #include <cstdlib>
 #include <map>
@@ -92,6 +91,9 @@ class units_tree {
   template <typename arg_type = tree_type>
   units_tree(arg_type &&units_tree)
       : m_units_tree{std::forward<arg_type>(units_tree)} {}
+  auto get_units_optional() const {
+    return m_units_tree.get_child_optional(units);
+  }
   auto get_units() const { return m_units_tree.get_child(units); }
   auto get_name() const { return m_units_tree.get<std::string>(name); }
   auto get_label() const { return m_units_tree.get<std::string>(label); }
@@ -149,9 +151,10 @@ class info_base_parser {
   }
 
  protected:
+  virtual void parser(const std::string_view &) = 0;
+  virtual void parser(const units_tree &) = 0;
+
   list_type m_info_list{};
-  virtual void parser(const std::string_view &config) = 0;
-  virtual void parser(const units_tree &units_tree) = 0;
 };
 
 }  // namespace InSys

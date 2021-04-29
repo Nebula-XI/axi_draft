@@ -8,7 +8,7 @@ namespace InSys {
 
 class i2c_units_tree : public units_tree {
   static constexpr auto k_i2c{"i2c"};
-  static constexpr auto k_segments_num{"segs"};
+  static constexpr auto k_segments_num{"segsnum"};
   static constexpr auto k_segment{"seg"};
   static constexpr auto k_address{"addr"};
   static constexpr auto k_frequency{"freq"};
@@ -16,8 +16,8 @@ class i2c_units_tree : public units_tree {
  public:
   using units_tree::units_tree;
   constexpr auto unit_name() const { return k_i2c; }
-  auto has_segments() const {
-    return m_units_tree.get_optional<uint32_t>(k_segments_num).has_value();
+  auto get_segments_num_optional() const {
+    return m_units_tree.get_optional<uint32_t>(k_segments_num);
   }
   auto get_segments_num() const {
     return m_units_tree.get<uint32_t>(k_segments_num);
@@ -64,15 +64,16 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
         auto i2c_tree = units_tree.get_units();
         for (auto &i2c : i2c_tree) {
           auto i2c_tree = i2c_units_tree{std::move(i2c.second)};
-          if (!i2c_tree.has_segments()) {
+          auto segments_num = i2c_tree.get_segments_num_optional();
+          if (!segments_num.has_value()) {
             continue;
           }
-          auto segments = i2c_tree.get_segments_num();
           auto name = i2c_tree.get_name();
           auto label = i2c_tree.get_label();
           auto addr = i2c_tree.get_address();
           auto freq = i2c_tree.get_frequency();
-          m_info_list.emplace_back(name, label, addr, freq, segments,
+          m_info_list.emplace_back(name, label, addr, freq,
+                                   segments_num.value(),
                                    make_info_uid{}(parent_name, parent_label));
         }
       }
@@ -103,8 +104,8 @@ class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
           auto label = i2c_tree.get_label();
           auto addr = i2c_tree.get_address();
           auto freq = i2c_tree.get_frequency();
-          if (i2c_tree.has_segments()) {
-            auto segments = i2c_tree.get_segments_num();
+          auto segments_num = i2c_tree.get_segments_num_optional();
+          if (segments_num.has_value()) {
             auto i2c_subtree = i2c_tree.get_units();
             for (auto &i2c_sub : i2c_subtree) {
               auto i2c_sub_tree = i2c_units_tree{std::move(i2c_sub.second)};

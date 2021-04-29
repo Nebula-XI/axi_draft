@@ -35,7 +35,7 @@
                     "label": "D105",
                     "addr": "0x53",
                     "freq": "400000",
-                    "segs": "4",
+                    "segsnum": "4",
                     "units": [
                         {
                             "name": "INA218",
@@ -83,7 +83,7 @@
                     "label": "D13",
                     "addr": "0x53",
                     "freq": "400000",
-                    "segs": "8",
+                    "segsnum": "8",
                     "units": [
                         {
                             "name": "INA218",
