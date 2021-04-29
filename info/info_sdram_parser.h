@@ -4,16 +4,17 @@
 
 namespace InSys {
 
-class sdram_units_parser_json : public units_parser_json {
+class sdram_units_tree : public units_tree {
   static constexpr auto k_sdram{"sdram"};
 
  public:
-  using units_parser_json::units_parser_json;
+  using units_tree::units_tree;
   constexpr auto unit_name() const { return k_sdram; }
 };
 class info_axi_sdram_parser
     : public info_base_parser<info_list, info_axi_sdram> {
-  void parser(const units_tree_type &units_tree) override {
+ protected:
+  void parser(const units_tree &units_tree) override {
     // TODO: add configuration parser
     /*
     m_info_list.emplace_back("SDRAM", "DDR0", 0x00080000);
@@ -21,7 +22,7 @@ class info_axi_sdram_parser
     */
   }
   void parser(const std::string_view &config) override {
-    parser(sdram_units_parser_json{config}.get_units());
+    parser(sdram_units_tree{config}.get_units());
   }
 
  public:
@@ -54,6 +55,8 @@ class info_sdram_parser final : public info_axi_sdram_parser {
 
  private:
   void parser(const std::string_view &config) final {
+    auto units_tree = gpio_units_tree{config}.get_units();
+    axi_parser::parser(units_tree);
     // TODO: add configuration parser
     /*
     axi_parser::m_info_list.emplace_back("SDRAM", "DDR0", 0x00080000);

@@ -4,15 +4,16 @@
 
 namespace InSys {
 
-class spi_units_parser_json : public units_parser_json {
+class spi_units_tree : public units_tree {
   static constexpr auto k_spi{"spi"};
 
  public:
-  using units_parser_json::units_parser_json;
+  using units_tree::units_tree;
   constexpr auto unit_name() const { return k_spi; }
 };
 class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
-  void parser(const units_tree_type &units_tree) override {
+ protected:
+  void parser(const units_tree &units_tree) override {
     // TODO: add configuration parser
     /*
     m_info_list.emplace_back("SPI", "PORT0", 0x00010000);
@@ -21,7 +22,7 @@ class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
     */
   }
   void parser(const std::string_view &config) override {
-    parser(spi_units_parser_json{config}.get_units());
+    parser(spi_units_tree{config}.get_units());
   }
 
  public:
@@ -30,7 +31,8 @@ class info_axi_spi_parser : public info_base_parser<info_list, info_axi_spi> {
 };
 
 class info_spi_dev_parser : public info_base_parser<info_list, info_spi_dev> {
-  void parser(const units_tree_type &units_tree) override {
+ protected:
+  void parser(const units_tree &units_tree) override {
     // TODO: add configuration parser
     /*
     m_info_list.emplace_back("LMX2594", "DD1", 0, 10_MHz,
@@ -42,7 +44,7 @@ class info_spi_dev_parser : public info_base_parser<info_list, info_spi_dev> {
     */
   }
   void parser(const std::string_view &config) override {
-    parser(units_parser_json{config}.get_units());
+    parser(units_tree{config}.get_units());
   }
 
  public:
@@ -77,6 +79,9 @@ class info_spi_parser final : public info_axi_spi_parser,
 
  private:
   void parser(const std::string_view &config) final {
+    auto units_tree = gpio_units_tree{config}.get_units();
+    axi_parser::parser(units_tree);
+    dev_parser::parser(units_tree);
     // TODO: add configuration parser
     /*
     axi_parser::m_info_list.emplace_back("SPI", "PORT0", 0x00010000);
