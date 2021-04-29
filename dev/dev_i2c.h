@@ -1,6 +1,9 @@
 #pragma once
 
 #include "dev_base.h"
+#include "dev_axi.h"
+#include "utility.h"
+#include "xilinx_iic.h"
 
 namespace InSys {
 
@@ -90,6 +93,12 @@ class dev_axi_i2c final : public detail::dev_axi_base<dev_axi_i2c_interface>,
   }
   void set_frequency(double frequency) noexcept final {
     // TODO: добавить установку частоты
+    float axi_freq = 250000000.0f;
+    float iic_freq = frequency;
+    float scl_internal_delay = 0.0f;
+    uint32_t val = (uint32_t)(((axi_freq/(2.0 * iic_freq)) - 7.0f - scl_internal_delay + 0.5f));
+    m_hw->write_axi(m_axi_offset, xilinx_iic::THIGH, val & 0xffffffff);
+    m_hw->write_axi(m_axi_offset, xilinx_iic::TLOW, val & 0xffffffff);
   }
   double get_frequency() const noexcept final {
     // TODO: добавить запрос частоты
@@ -103,10 +112,158 @@ class dev_axi_i2c final : public detail::dev_axi_base<dev_axi_i2c_interface>,
     // добавить чтение i2c
     return {};
   }
-  private:
-    i2c_address m_address{};
-    double m_frequency{};
-    i2c_addressing m_addressing{};
+ private:
+
+  devaxi_t  m_hw;
+  i2c_address m_address{};
+  double m_frequency{};
+  i2c_addressing m_addressing{};
+  uint32_t m_axi_offset;
+
+  void enable() {
+    m_hw->write_axi(m_axi_offset, xilinx_iic::RX_FIFO_PIRQ, 0xF);                                   //! Установим глубину RX_FIFO
+    m_hw->write_axi(m_axi_offset, xilinx_iic::CR, xilinx_iic::CR_EN|xilinx_iic::CR_TX_FIFO_Reset);  //! СБросим TX_FIFO
+    m_hw->write_axi(m_axi_offset, xilinx_iic::CR, xilinx_iic::CR_EN);                               //! Разрешим работу контроллера
+  }
+
+  void disable() { m_hw->write_axi(m_axi_offset, xilinx_iic::CR, 0); }
+
+  bool check_rx_fifo(size_t timeout = 500) {
+    //! Ожидаем, готовности RX_FIFO
+    ipc_time_t start = ipc_get_time();
+    uint32_t status = 0;
+    if(!m_hw->read_axi(m_axi_offset, xilinx_iic::SR, status))
+      return false;
+    while(status & xilinx_iic::STAT_RX_FIFO_Empty) {
+        if(ipc_get_difftime(start, ipc_get_time()) >= timeout) {
+            fprintf(stderr, "RX_FIFO not filled! Timeout exit.\n");
+            return false;
+        }
+        if(!m_hw->read_axi(m_axi_offset, xilinx_iic::SR, status))
+          return false;
+    }
+    return true;
+  }
+
+  bool check_tx_fifo_full(size_t timeout = 500) {
+    //! Ожидаем, готовности TX_FIFO
+    ipc_time_t start = ipc_get_time();
+    uint32_t status = 0;
+    if(!m_hw->read_axi(m_axi_offset, xilinx_iic::SR, status))
+      return false;
+    while(status & xilinx_iic::STAT_TX_FIFO_Full) {
+        if(ipc_get_difftime(start, ipc_get_time()) >= timeout) {
+            fprintf(stderr, "TX_FIFO full! Timeout exit.\n");
+            return false;
+        }
+        if(!m_hw->read_axi(m_axi_offset, xilinx_iic::SR, status))
+          return false;
+    }
+    return true;
+  }
+
+  bool check_tx_fifo_empty(size_t timeout = 500) {
+    //! Ожидаем, готовности TX_FIFO
+    ipc_time_t start = ipc_get_time();
+    uint32_t isr_status = 0;
+    if(!m_hw->read_axi(m_axi_offset, xilinx_iic::ISR, isr_status))
+      return false;
+    while(!(isr_status & xilinx_iic::ISR_TX_FIFO_EMPTY)) {
+      if(ipc_get_difftime(start, ipc_get_time()) >= timeout) {
+        fprintf(stderr, "TX_FIFO full! Timeout exit.\n");
+          return false;
+      }
+      if(!m_hw->read_axi(m_axi_offset, xilinx_iic::ISR, isr_status))
+        return false;
+    }
+    m_hw->write_axi(m_axi_offset, xilinx_iic::ISR, (isr_status | xilinx_iic::ISR_TX_FIFO_EMPTY));
+    return true;
+  }
+
+  bool wait_bus_busy(size_t timeout = 500) {
+    //! Ожидаем, готовности RX_FIFO
+    ipc_time_t start = ipc_get_time();
+    uint32_t status = 0;
+    if(!m_hw->read_axi(m_axi_offset, xilinx_iic::SR, status))
+      return false;
+    while(status & xilinx_iic::STAT_BB) {
+        if(ipc_get_difftime(start, ipc_get_time()) >= timeout) {
+            uint32_t isr_status = 0;
+            m_hw->read_axi(m_axi_offset, xilinx_iic::SR, isr_status);
+            fprintf(stderr, "IIC bus busy! Timeout exit. SR: 0x%x ISR: 0x%x\n", status, isr_status);
+            return false;
+        }
+    if(!m_hw->read_axi(m_axi_offset, xilinx_iic::SR, status))
+      return false;
+    }
+    return true;
+  }
+
+  bool read_fifo(uint32_t& value, size_t timeout = 500) {
+    //! Ожидаем, готовности RX_FIFO
+    if(!check_rx_fifo(timeout))
+        return false;
+    //! Читаем очередной байт из RX_FIFO
+    return m_hw->read_axi(m_axi_offset, xilinx_iic::RX_FIFO, value);
+  }
+
+  bool write_fifo(uint32_t val, size_t timeout = 500) {
+    //! Ожидаем, готовности TX_FIFO
+    if(!check_tx_fifo_full(timeout))
+        return false;
+    //! Пишем очередной байт в RX_FIFO
+    return m_hw->write_axi(m_axi_offset, xilinx_iic::TX_FIFO, val);
+  }
+
+  bool read(const i2c_address i2c_addr, std::vector<uint8_t>& data, size_t N) {
+
+      enable();
+
+      //! Проверим состояние шины и FIFO
+      if(!wait_bus_busy()) {
+          return false;
+      }
+
+      //! Старт, адрес, если data.empty() то чтение, иначе - запишем данные из data, а потом читаем
+      uint32_t fifo_start = (xilinx_iic::IIC_START | (i2c_addr << 1) | (data.empty() ? xilinx_iic::IIC_READ : xilinx_iic::IIC_WRITE));
+      if(!write_fifo(fifo_start))
+          return false;
+
+
+      //! Запишем все входные данные в TX_FIFO
+      for(size_t ii = 0; ii < data.size(); ++ii) {
+          uint32_t fifo_data = data.at(ii);
+          if(!write_fifo(fifo_data))
+              return false;
+      }
+
+      //! Команда на чтение данных
+      if(!data.empty()) {
+          uint32_t fifo_data = (xilinx_iic::IIC_START | (i2c_addr << 1) | xilinx_iic::IIC_READ);
+          if(!write_fifo(fifo_data))
+              return false;
+      }
+
+      //! Стоп и число байт, которые необходимо получить
+      uint32_t fifo_stop = (xilinx_iic::IIC_STOP | N);
+      if(!write_fifo(fifo_stop))
+          return false;
+
+      //! Считаем N-байт данных из RX_FIFO
+      data.clear();
+      for(size_t ii = 0; ii < N; ++ii) {
+
+          //! Ожидаем, готовности RX_FIFO
+          uint32_t fifo_data = 0;
+          if(!read_fifo(fifo_data))
+              return false;
+
+          uint8_t byte = static_cast<uint8_t>(fifo_data);
+          data.push_back(byte);
+      }
+
+      return true;
+  }
 };
 
 class dev_i2c_mux : public detail::dev_i2c_base<dev_i2c_mux>,
