@@ -65,7 +65,7 @@ class info_i2c_mux_parser : public info_base_parser<info_list, info_i2c_mux> {
         for (auto &i2c : i2c_tree) {
           auto i2c_tree = i2c_units_tree{std::move(i2c.second)};
           auto segments_num = i2c_tree.get_segments_num_optional();
-          if (!segments_num.has_value()) {
+          if (!segments_num) {
             continue;
           }
           auto name = i2c_tree.get_name();
@@ -105,7 +105,7 @@ class info_i2c_dev_parser : public info_base_parser<info_list, info_i2c_dev> {
           auto addr = i2c_tree.get_address();
           auto freq = i2c_tree.get_frequency();
           auto segments_num = i2c_tree.get_segments_num_optional();
-          if (segments_num.has_value()) {
+          if (!segments_num) {
             auto i2c_subtree = i2c_tree.get_units();
             for (auto &i2c_sub : i2c_subtree) {
               auto i2c_sub_tree = i2c_units_tree{std::move(i2c_sub.second)};
