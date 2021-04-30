@@ -105,12 +105,16 @@ class dev_axi_i2c final : public detail::dev_axi_base<dev_axi_i2c_interface>,
     return {};
   }
   size_t write(const i2c_data& data) final {
-    // добавить запись i2c
-    return {};
+    auto written = write(m_address, data);
+    if(!written)
+      return 0;
+    return data.size();
   }
   size_t read(i2c_data& data, const size_t N) final {
-    // добавить чтение i2c
-    return {};
+    auto readed = read(m_address, data, N);
+    if(!readed)
+      return 0;
+    return data.size();
   }
  private:
 
@@ -263,6 +267,42 @@ class dev_axi_i2c final : public detail::dev_axi_base<dev_axi_i2c_interface>,
       }
 
       return true;
+  }
+
+  bool write(const uint8_t i2c_addr, const std::vector<uint8_t>& data) {
+
+    if(data.empty())
+        return false;
+
+    enable();
+
+    //! Проверим состояние шины и FIFO
+    if(!wait_bus_busy()) {
+        return false;
+    }
+
+    //! Старт, адрес, запись
+    uint32_t fifo_start = (xilinx_iic::IIC_START | (i2c_addr << 1) | xilinx_iic::IIC_WRITE);
+    if(!write_fifo(fifo_start))
+        return false;
+
+
+    //! Запишем все данные в TX_FIFO, кроме последнего байта
+    for(size_t ii = 0; ii < data.size() - 1; ++ii) {
+        uint32_t fifo_data = data.at(ii);
+        if(!write_fifo(fifo_data))
+            return false;
+    }
+
+    //! Cтоп, последний байт данных
+    uint32_t fifo_stop = (xilinx_iic::IIC_STOP | data.at(data.size()-1));
+    if(!write_fifo(fifo_stop))
+        return false;
+
+    if(!check_tx_fifo_empty(500))
+        return false;
+
+    return true;
   }
 };
 
