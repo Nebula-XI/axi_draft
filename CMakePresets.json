@@ -11,7 +11,6 @@
       "hidden": true,
       "displayName": "Ninja with DTK",
       "generator": "Ninja",
-      "architecture": "x64",
       "binaryDir": "${sourceDir}/build/",
       "cacheVariables": {
         "CMAKE_SYSTEM_NAME": "Linux",
