@@ -95,7 +95,7 @@ class dev_axi_i2c final : public detail::dev_axi_base<dev_axi_i2c_interface>,
     // TODO: добавить запрос частоты
     return {};
   }
-  size_t write(const i2c_data& data) final {
+  std::size_t write(const i2c_data& data) final {
     // добавить запись i2c
     return {};
   }
@@ -120,7 +120,7 @@ class dev_i2c_mux : public detail::dev_i2c_base<dev_i2c_mux>,
               i2c_addressing addressing = i2c_addressing::_7bit)
       : dev_i2c_base{io, fn, address, frequency, addressing},
         m_segment{segment} {}
-  size_t write(const i2c_data& data) final {
+  std::size_t write(const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);
@@ -152,7 +152,7 @@ class dev_i2c : public detail::dev_i2c_base<dev_i2c_mux>,
           double frequency = double(400_kHz),
           i2c_addressing addressing = i2c_addressing::_7bit)
       : dev_i2c_base{io, fn, address, frequency, addressing} {}
-  size_t write(const i2c_data& data) final {
+  std::size_t write(const i2c_data& data) final {
     assert(m_io.use_count() != 0 && m_io.get() != nullptr);
     call_parent();
     m_io->configure(m_address, m_frequency, m_addressing);

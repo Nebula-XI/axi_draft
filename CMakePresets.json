@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "linux",
+      "displayName": "Ninja with DTK",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_SYSTEM_NAME": "Linux",
+        "CMAKE_TOOLCHAIN_FILE": "DEVToolKit-Cross",
+        "CMAKE_SYSTEM_PROCESSOR": "x86_64"
+      },
+      "environment": {}
+    },
+     {
+      "name": "windows",
+      "displayName": "Ninja with DTK",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_SYSTEM_NAME": "Windows",
+        "CMAKE_TOOLCHAIN_FILE": "DEVToolKit-Cross",
+        "CMAKE_SYSTEM_PROCESSOR": "x86_64"
+      },
+      "environment": {}
+    }
+  ]
+}
