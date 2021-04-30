@@ -8,8 +8,10 @@
   "configurePresets": [
     {
       "name": "default",
+      "hidden": true,
       "displayName": "Ninja with DTK",
       "generator": "Ninja",
+      "architecture": "x64",
       "binaryDir": "${sourceDir}/build/",
       "cacheVariables": {
         "CMAKE_SYSTEM_NAME": "Linux",
@@ -24,6 +26,8 @@
     {
       "name": "linux",
       "inherits": "default",
+      "displayName": "Linux - DTK",
+      "description": "Release build for Linux using Ninja generator and Clang compiler",
       "binaryDir": "${sourceDir}/build/linux",
       "cacheVariables": {
         "CMAKE_SYSTEM_NAME": "Linux"
@@ -32,14 +36,18 @@
     {
       "name": "windows",
       "inherits": "default",
+      "displayName": "Windows - DTK",
+      "description": "Release build for Windows using Ninja generator and Clang compiler",
       "binaryDir": "${sourceDir}/build/windows",
       "cacheVariables": {
         "CMAKE_SYSTEM_NAME": "Windows"
       }
-    },  
+    },
     {
       "name": "linux-debug",
       "inherits": "linux",
+      "displayName": "Linux - DTK (Debug)",
+      "description": "Debug build for Linux using Ninja generator and Clang compiler",
       "binaryDir": "${sourceDir}/build/linux-debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
@@ -48,6 +56,8 @@
     {
       "name": "windows-debug",
       "inherits": "windows",
+      "displayName": "Windows - DTK (Debug)",
+      "description": "Debug build for Windows using Ninja generator and Clang compiler",
       "binaryDir": "${sourceDir}/build/windows-debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
