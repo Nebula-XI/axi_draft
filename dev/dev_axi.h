@@ -12,33 +12,6 @@ namespace InSys
 #define ALIGN_UP(value, align) (((value) & (align - 1)) ? (((value) + (align - 1)) & ~(align - 1)) : (value))
 
 //-----------------------------------------------------------------------------
-//  Вспомогательный класс для выделения блоков памяти
-//-----------------------------------------------------------------------------
-    class memory_buffer
-    {
-    public:
-        memory_buffer(size_t size)
-        {
-            data = new char[size];
-            if (data)
-            {
-                len = size;
-                memset(data, '\0', size);
-            }
-        };
-        virtual ~memory_buffer() { delete[] data; }
-        size_t buffer_size() { return len; }
-        template <typename T = void *>
-        T *buffer_address() { return reinterpret_cast<T *>(data); }
-
-    private:
-        char *data;
-        size_t len;
-    };
-    using buffer_t = std::shared_ptr<memory_buffer>;
-    inline buffer_t get_buffer(size_t len) { return std::make_shared<memory_buffer>(len); }
-
-//-----------------------------------------------------------------------------
 //  Класс для работы с физическим PCIe устройством. Выполняет отоборажение BAR
 //  в адресное пространство процесса и запись чтение регистров из этих областей
 //-----------------------------------------------------------------------------

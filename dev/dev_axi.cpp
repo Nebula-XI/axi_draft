@@ -44,21 +44,16 @@ bool axi_config::write_configuration(const std::string &config_file)
 
     // буфер для конфигурационного пространства выровненный на 4 байта
     size_t space_size = ALIGN_UP(config_size, 4);
-    buffer_t space_buffer = get_buffer(space_size);
-    if(!space_buffer->buffer_address()) {
-        return false;
-    }
-
+    std::vector<uint8_t> space_buffer(space_size, 0);
     // скопируем содержимое файла в буфер
     size_t offset = 0;
-    uint8_t *buffer8 = space_buffer->buffer_address<uint8_t>();
     for(const auto& v : config_data) {
-        buffer8[offset++] = v;
+        space_buffer[offset++] = v;
     }
-    buffer8[offset++] = '\0';
+    space_buffer[offset++] = '\0';
 
     // перепишем все конфигурационные данные из буфера в BRAM
-    uint32_t *buffer32 = space_buffer->buffer_address<uint32_t>();
+    uint32_t *buffer32 = reinterpret_cast<uint32_t*>(space_buffer.data());
     for(size_t ii=0; ii<space_size>>2; ii++) {
         _hw->write_axi(0, ii, buffer32[ii]);
     }
