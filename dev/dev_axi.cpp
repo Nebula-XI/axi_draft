@@ -54,9 +54,9 @@ bool axi_config::write_configuration(const std::string &config_file)
 
     // перепишем все конфигурационные данные из буфера в BRAM
     auto buffer32 = (uint32_t*)space_buffer.data();
-    for(size_t ii=0; ii<space_size>>2; ii++) {
-        auto val = buffer32[ii];
-        _hw->write_axi(0, ii, val);
+    for(int idx{}; idx < space_buffer.size()/sizeof(uint32_t); ++idx) {
+        auto val = buffer32[idx];
+        _hw->write_axi(0, idx, val);
     }
 
     return true;
