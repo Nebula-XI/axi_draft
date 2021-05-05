@@ -53,9 +53,10 @@ bool axi_config::write_configuration(const std::string &config_file)
     space_buffer[offset++] = '\0';
 
     // перепишем все конфигурационные данные из буфера в BRAM
-    uint32_t *buffer32 = reinterpret_cast<uint32_t*>(space_buffer.data());
+    auto buffer32 = (uint32_t*)space_buffer.data();
     for(size_t ii=0; ii<space_size>>2; ii++) {
-        _hw->write_axi(0, ii, buffer32[ii]);
+        auto val = buffer32[ii];
+        _hw->write_axi(0, ii, val);
     }
 
     return true;
