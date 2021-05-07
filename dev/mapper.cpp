@@ -17,34 +17,28 @@ using namespace std;
 Mapper::Mapper()
 {
     mappedList.clear();
-    extHandle = false;
-    fd = -1;
+    _valid = false;
+    _fd = -1;
 }
 
 //-----------------------------------------------------------------------------
 
 void Mapper::init(int handle)
 {
-    extHandle = true;
-    fd = handle;
+    mappedList.clear();
+    if(handle > 0) {
+        _valid = true;
+        _fd = handle;
+    } else {
+        _valid = false;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 Mapper::Mapper(int handle)
 {
-    mappedList.clear();
-    if(handle) {
-        extHandle = true;
-        fd = handle;
-    } else {
-        extHandle = false;
-        try {
-            openDevMem();
-        } catch(const except_info_t& err) {
-            fprintf(stderr, "%s, %d, %s(): %s", __FILE__, __LINE__, __func__, err.info.c_str());
-        }
-    }
+    init(handle);
 }
 
 //-----------------------------------------------------------------------------
@@ -52,37 +46,21 @@ Mapper::Mapper(int handle)
 Mapper::~Mapper()
 {
     unmap();
-    if(!extHandle)
-        closeDevMem();
-}
-
-//-----------------------------------------------------------------------------
-
-int Mapper::openDevMem()
-{
-    fd = open("/dev/mem", O_RDWR, 0666);
-    if(fd < 0) {
-        throw std::string("%s, %d: %s() - Error open /dev/mem.\n", __FILE__, __LINE__, __FUNCTION__);
-    }
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-void Mapper::closeDevMem()
-{
-    close(fd);
 }
 
 //-----------------------------------------------------------------------------
 
 void* Mapper::map(size_t physicalAddress, uint32_t areaSize)
 {
+    if(!_valid) {
+        throw std::string("Invalid handle.\n");
+    }
+
     struct map_addr_t map = {0, physicalAddress, areaSize};
 
     map.virtualAddress = mmap(0, map.areaSize, PROT_READ|PROT_WRITE, MAP_SHARED, fd, (off_t)map.physicalAddress);
     if(map.virtualAddress == MAP_FAILED) {
-        throw std::string("%s, %d: %s() - Error in IPC_mapPhysAddr().\n", __FILE__, __LINE__, __FUNCTION__);
+        throw std::string("Error in mmap().\n");
     }
 
     mappedList.push_back(map);
@@ -94,11 +72,15 @@ void* Mapper::map(size_t physicalAddress, uint32_t areaSize)
 
 void* Mapper::map(void* physicalAddress, uint32_t areaSize)
 {
+    if(!_valid) {
+        throw std::string("Invalid handle.\n");
+    }
+
     struct map_addr_t map = {0, reinterpret_cast<size_t>(physicalAddress), areaSize};
 
     map.virtualAddress = mmap(0, map.areaSize, PROT_READ|PROT_WRITE, MAP_SHARED, fd, (off_t)map.physicalAddress);
     if(map.virtualAddress == MAP_FAILED) {
-        throw std::string("%s, %d: %s() - Error in IPC_mapPhysAddr().\n", __FILE__, __LINE__, __FUNCTION__);
+        throw std::string("Error in mmap().\n");
     }
 
     mappedList.push_back(map);

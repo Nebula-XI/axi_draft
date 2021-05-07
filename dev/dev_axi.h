@@ -48,24 +48,24 @@ namespace InSys
         size_t _xdma_bar_size{0};
 
 #ifdef __linux__
-	    int _fd{-1};
+        int _fd{-1};
         inline int fd() { return _fd; }
-	    Mapper _mm;
+        Mapper _mm;
 #else
-	    HANDLE _fd{nullptr};
+        HANDLE _fd{nullptr};
         inline HANDLE fd() { return _fd; }
 #endif
 
-    	inline bool dev_ioctl(unsigned long cmd, void *srcBuf, size_t srcSize, void *dstBuf, size_t dstSize) {
+        inline bool dev_ioctl(unsigned long cmd, void *srcBuf, size_t srcSize, void *dstBuf, size_t dstSize) {
 #ifdef __linux__
-    		struct ioctl_param param {.srcBuf = srcBuf, .srcSize = srcSize, .dstBuf = dstBuf, .dstSize = dstSize};
+            struct ioctl_param param {.srcBuf = srcBuf, .srcSize = srcSize, .dstBuf = dstBuf, .dstSize = dstSize};
             int res = ioctl(_fd, cmd, &param);
-    		return res < 0 ? false : true;
+            return res < 0 ? false : true;
 #else
-		    ULONG  length;     // the return length from the driver
-		    return DeviceIoControl(_fd, cmd, srcBuf, srcSize, dstBuf, dstSize, &length, NULL);
+            ULONG  length;     // the return length from the driver
+            return DeviceIoControl(_fd, cmd, srcBuf, srcSize, dstBuf, dstSize, &length, NULL);
 #endif
-	    }
+        }
 
         bool is_insys_tag(size_t* bar) {
             char* insys_tag = (char*)bar;

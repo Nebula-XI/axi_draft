@@ -31,11 +31,9 @@ public:
     void  unmap();
 
 private:
-    int fd;
-    bool extHandle;
+    int _fd{-1};
+    bool _valid{false};
     std::vector<struct map_addr_t> mappedList;
-    int openDevMem();
-    void closeDevMem();
 };
 
 //-----------------------------------------------------------------------------
