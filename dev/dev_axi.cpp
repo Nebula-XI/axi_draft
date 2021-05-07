@@ -4,6 +4,10 @@
 #include <cstdlib>
 #include <cstdint>
 #include <fstream>
+#include <fcntl.h>
+#ifdef __linux__
+#include <unistd.h>
+#endif
 
 using namespace InSys;
 
@@ -11,19 +15,76 @@ using namespace InSys;
 
 dev_axi::dev_axi(const std::string &name) : _name(name), _valid(true)
 {
-    // TODO: 
-    // Открыть устройство
-    // Получить конфигурацию
-    // Отобразить BAR из драйвера или через mmap(...)
-    // Получчить информацию об устройстве (DMA, etc...)
+    try {
+#ifdef __linux__
+		_fd = open(_name.c_str(), O_RDWR, 0666);
+		if (_fd < 0) {
+			throw std::string("Error open device!\n");
+		}
+        _mm.init(_fd);
+#else
+		_fd = CreateFile(devname.c_str(), GENERIC_READ | GENERIC_WRITE,
+			FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+		if (_fd == INVALID_HANDLE_VALUE) {
+			throw std::string("Error open device!\n");
+		}
+#endif
+        struct bar_info_t bi;
+	    if (!dev_ioctl(BAR_INFO, nullptr, 0, &bi, sizeof(struct bar_info_t))) {
+			throw std::string("Error in dev_ioctl()!\n");
+        }
+
+        size_t *_bar{nullptr};
+        size_t _sz{0ULL};
+
+		for(int ii=0; ii<MAX_BAR; ii++) {
+            if(!bi.pa[ii]) continue;
+#ifdef __linux__
+			_bar = (size_t*)(_mm.map(bi.pa[ii], bi.sz[ii]));
+#else
+			_bar = (size_t*)(bi.va[ii]);
+#endif
+			if(!_bar) {
+                throw std::string("Can't map BAR into application.\n");
+            }
+            _sz = bi.sz[ii];
+
+            fprintf(stderr, "%s(): 0x%lx --> %p : [0x%lx]\n", __func__, bi.pa[ii], _bar, _sz);
+
+            if(is_insys_tag(_bar)) {
+                _axi_bar = _bar;
+                _axi_bar_size = _sz;
+                continue;
+            }
+
+            uint32_t reg_val = _bar[0];
+            if(((reg_val >> 20) & 0xfff) == 0x1fC) {
+                fprintf("%s(): Found DMA Subsystem for PCIe on BAR%d. ID: 0x%x\n", __func__, ii, reg_val>>20 );
+                _xdma_bar = _bar;
+                _xdma_bar_size = _sz;
+            }
+        }
+
+        if(_axi_bar_size && _xdma_bar) {
+            _valid = true;
+        }
+
+    } catch(...) {
+        //TODO: Free rsources and throw exception to upper layers
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 dev_axi::~dev_axi()
 {
-    // TODO: 
-    // Освободить занимаемые ресурсы
+    if(_fd > 0) {
+#ifdef __linux__
+		close(_fd);
+#else
+		CloseHandle(_fd);
+#endif
+    }
 }
 
 //-----------------------------------------------------------------------------

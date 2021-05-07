@@ -1,6 +1,9 @@
 
 #pragma once
 
+#include "drv_ioctls.h"
+#include "mapper.h"
+
 #include <string>
 #include <vector>
 #include <cstring>
@@ -37,12 +40,50 @@ namespace InSys
 
     private:
         dev_axi() = default;
-        std::string _name;
-        bool _valid;
-        uint32_t* _axi_bar;
-        uint32_t _axi_bar_size;
-        uint32_t* _xdma_bar;
-        uint32_t _xdma_bar_size;
+        std::string _name{};
+        bool _valid{false};
+        size_t* _axi_bar{nullptr};
+        size_t _axi_bar_size{0};
+        size_t* _xdma_bar{nullptr};
+        size_t _xdma_bar_size{0};
+
+#ifdef __linux__
+	    int _fd{-1};
+        inline int fd() { return _fd; }
+	    Mapper _mm;
+#else
+	    HANDLE _fd{nullptr};
+        inline HANDLE fd() { return _fd; }
+#endif
+
+    	inline bool dev_ioctl(unsigned long cmd, void *srcBuf, size_t srcSize, void *dstBuf, size_t dstSize) {
+#ifdef __linux__
+    		struct ioctl_param param {.srcBuf = srcBuf, .srcSize = srcSize, .dstBuf = dstBuf, .dstSize = dstSize};
+            int res = ioctl(_fd, cmd, &param);
+    		return res < 0 ? false : true;
+#else
+		    ULONG  length;     // the return length from the driver
+		    return DeviceIoControl(_fd, cmd, srcBuf, srcSize, dstBuf, dstSize, &length, NULL);
+#endif
+	    }
+
+        bool is_insys_tag(size_t* bar) {
+            char* insys_tag = (char*)bar;
+            if(insys_tag) {
+                std::string bram = insys_tag;
+                size_t pos = bram.find_first_of('\n');
+                if(pos >= 0) {
+                    std::string tag = bram.substr(0, pos);
+                    if(tag == "[insys]") {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+//-----------------------------------------------------------------------------
+
     };
     using devaxi_t = std::shared_ptr<dev_axi>;
     inline devaxi_t get_axi_devce(const std::string &name) { return std::make_shared<dev_axi>(name); }
