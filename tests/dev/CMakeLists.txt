@@ -16,7 +16,7 @@ include_directories(
 )
 add_executable(${PROJECT_NAME} test_dev.cpp)
 
-add_test("test_dev" test_dev)
+add_test("../../test_dev" test_dev)
 
 find_package(Boost 1.65 REQUIRED)
 if(Boost_FOUND)
