@@ -7,7 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(COMPILE_FLAGS -Wall -Wextra -Werror)
 
 add_definitions()
-include_directories( "../include" "../../info" "../../include")
+include_directories(
+    "../include"
+    "../../include"
+    "../../info"
+)
 add_executable(${PROJECT_NAME} test_info.cpp)
 
 add_test("test_info" test_info)

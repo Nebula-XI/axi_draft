@@ -36,6 +36,7 @@
 **/packages
 *.*user
 /resource.h
+*.code-workspace
 
 # GCC
 *.d

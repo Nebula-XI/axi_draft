@@ -8,7 +8,11 @@ set(COMPILE_FLAGS -Wall -Wextra -Werror)
 
 add_definitions()
 include_directories(
-    "../../dev" "../../include" "../../devices/i2c" "../include" "../../info"
+    "../include"
+    "../../dev"
+    "../../include"
+    "../../devices/i2c"
+    "../../info"
 )
 add_executable(${PROJECT_NAME} test_dev.cpp)
 
