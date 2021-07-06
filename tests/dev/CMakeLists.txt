@@ -16,7 +16,7 @@ include_directories(
 )
 add_executable(${PROJECT_NAME} test_dev.cpp)
 
-add_test("test_dev" test_dev)
+add_test(NAME test_dev COMMAND test_dev config/units_config.json WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 find_package(Boost 1.65 REQUIRED)
 if(Boost_FOUND)
